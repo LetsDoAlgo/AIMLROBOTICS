@@ -1,0 +1,68 @@
+Is there a scope of using Mobile Robots in your work environment?
+[Note: If the answer is "No" then explore requirements in your client's / Collaborator's environment or aspirational workplace to answer following questions]
+*
+>>> ANSWER: Yes
+
+(ABB deploys autonomous mobile robots (AMRs) in manufacturing floors for material transport, and robotic arms rely on precise motion planning — mobile robots complement them by feeding parts to workstations.)
+
+---
+
+Relate your experience gained while solving the Assignment 1 Part A exercises to answer the below questions
+
+---
+
+How does this assignment relate to your current or aspirational workplace? Which robotics concept(s) did you find directly applicable to your field?*
+
+>>> ANSWER: At ABB, we work with industrial robotic arms and automation systems. This assignment directly relates because ABB also develops AMRs (like the FlexFR series) that transport materials between robotic arm workstations on factory floors. The probabilistic motion model concept is highly applicable — our robotic arms and mobile platforms both face positional uncertainty due to payload variations, floor vibrations, and mechanical wear. The beam-based sensor model is relevant for how ABB's mobile robots detect pallets, human workers, and other equipment on the shop floor using LiDAR to ensure safe navigation in shared human-robot workspaces.
+
+---
+
+What practical insights did you gain about robot motion or sensing from the implementation?*
+
+>>> ANSWER: I learned that motion uncertainty accumulates rapidly over distance — even small errors in wheel odometry lead to significant drift, which is why ABB's mobile robots use frequent localization corrections via reflectors and LiDAR. I also understood how the sensor model's four components (hit, short, max, random) elegantly handle real factory scenarios: a forklift suddenly crossing the path (short reading), long open aisles (max-range), and sensor noise from reflective metal surfaces common in industrial environments. This insight explains why ABB combines multiple sensing modalities rather than relying on a single sensor.
+
+---
+
+What was the most challenging or eye-opening part of the task?*
+
+>>> ANSWER: The most eye-opening part was visualizing how drastically the noise parameters (α values) affect trajectory spread. When I simulated higher noise — analogous to a heavily loaded mobile robot on a vibrating factory floor — the positional uncertainty became so large that the robot could miss a docking station entirely. This made me appreciate why ABB invests in precision encoders and IMUs for their robots, and why calibration routines are critical after payload changes on robotic arms.
+
+---
+
+How did this activity strengthen your technical or analytical thinking skills?*
+
+>>> ANSWER: It strengthened my ability to translate mathematical probability models into working code and interpret the results practically. I now think about robot performance in terms of distributions and confidence bounds rather than single deterministic values. This probabilistic mindset is directly useful at ABB when analyzing robotic arm repeatability specifications, estimating cycle time variations, and designing safety zones around mobile robots on the factory floor.
+
+---
+
+How would you apply these skills in a future project or work situation?*
+
+>>> ANSWER: I would apply probabilistic motion modeling to optimize path planning for ABB's mobile robots navigating between CNC machines and robotic arm cells — accounting for floor quality, payload weight, and traffic patterns to reduce delivery time while maintaining safety margins. I could also use sensor model concepts to improve obstacle detection reliability in environments with reflective metal surfaces and dynamic human workers, which is a common challenge in ABB's industrial deployments.
+
+---
+
+Which specific mobile robot sensing component (e.g., LiDAR, Camera, GPS etc.,) is most critical for tasks in your domain, based on what you learned?
+
+>>> ANSWER: LiDAR — In ABB's industrial automation domain, 2D/3D LiDAR is the most critical sensing component. Factory floors have structured environments with metallic surfaces, forklifts, and human workers. LiDAR provides reliable range measurements for simultaneous localization and obstacle avoidance regardless of lighting conditions (unlike cameras), and works indoors where GPS is unavailable. The beam-based sensor model from the assignment directly maps to how industrial LiDAR handles reflective surfaces (unexpected short readings) and long open corridors (max-range returns).
+
+---
+
+Based on the assignment, how much do you agree that integrating AI/ML is essential for the successful deployment of mobile robots in complex real-world scenarios?
+
+>>> ANSWER: 5 (Strongly Agree)
+
+(Probabilistic models and ML-based perception are essential for robots to handle the uncertainty, dynamic obstacles, and variability present in real factory environments. Deterministic programming alone cannot cope with the complexity of shared human-robot workspaces.)
+
+---
+
+How would you rate the effectiveness of the AI/ML approach learned in the assignment for solving a practical problem in your field?
+
+>>> ANSWER: 4
+
+(The probabilistic approach is highly effective for modeling motion and sensor uncertainty in industrial settings. Giving 4 instead of 5 because real ABB deployments also require integration with PLC systems, safety-rated controllers, and industrial communication protocols beyond what the assignment covered.)
+
+---
+
+Please provide an example of a specific task in your domain where a mobile robot could significantly improve efficiency.
+
+>>> ANSWER: At ABB, a mobile robot (AMR) could significantly improve efficiency in automated material handling between robotic arm welding cells. Currently, operators manually load metal parts onto carts and push them between stations. An AMR with LiDAR-based navigation could autonomously pick up finished parts from one robotic arm cell, transport them across the factory floor while avoiding forklifts and workers, and deliver them to the next robotic arm cell for assembly — reducing inter-station transfer time by ~60% and freeing operators for higher-value tasks like quality inspection and programming.

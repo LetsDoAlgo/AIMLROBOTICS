@@ -1,0 +1,169 @@
+(base) cloud@xubuntu:~/Downloads$ bash run_dstar_ros2_linux.sh
+--action verify
+--mode package
+--goal-x 2.0 --goal-y 1.0
+--goal-retries 6
+--bringup-cmd "ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py"
+--extra-bringup-cmd "ros2 launch turtlebot3_cartographer cartographer.launch.py use_sim_time:=True"
+[INFO] Action=node: running planner
+Traceback (most recent call last):
+  File "/home/cloud/Downloads/ros2_dstar_node.py", line 374, in <module>
+    raise RuntimeError(
+RuntimeError: ROS 2 Python packages are not available in this environment. Run this file inside a sourced ROS 2 workspace (e.g., Humble/Jazzy).
+--action: command not found
+--mode: command not found
+--goal-x: command not found
+--goal-retries: command not found
+--bringup-cmd: command not found
+--extra-bringup-cmd: command not found
+(base) cloud@xubuntu:~/Downloads$ ^Csh run_dstar_ros2_linux.sh
+(base) cloud@xubuntu:~/Downloads$ ^C
+(base) cloud@xubuntu:~/Downloads$ ^C
+(base) cloud@xubuntu:~/Downloads$ ^C
+(base) cloud@xubuntu:~/Downloads$ ^C
+(base) cloud@xubuntu:~/Downloads$ bash run_dstar_ros2_linux.sh \
+  --action verify \
+  --mode package \
+  --goal-x 2.0 --goal-y 1.0 \
+  --goal-retries 6 \
+  --bringup-cmd "ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py" \
+  --extra-bringup-cmd "ros2 launch turtlebot3_cartographer cartographer.launch.py use_sim_time:=True"
+[INFO] Preparing package mode workspace
+Starting >>> dstar_planner
+Finished <<< dstar_planner [0.84s]          
+
+Summary: 1 package finished [0.94s]
+[INFO] Action=verify: full end-to-end verification
+[INFO] Verification report: /tmp/dstar_e2e_verify.log
+[INFO] Starting full end-to-end verification
+[INFO] Launching recommended UI dashboards (if installed)
+[INFO] Started rviz2
+[INFO] Started rqt_graph
+[WARN] rqt_topic not found; skipping topic UI
+[WARN] TURTLEBOT3_MODEL not set. Defaulting to burger.
+[INFO] Starting bringup command in background
+[INFO] Command: ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
+[INFO] Bringup PID: 4820
+[INFO] Starting extra bringup command in background
+[INFO] Command: ros2 launch turtlebot3_cartographer cartographer.launch.py use_sim_time:=True
+[INFO] Extra bringup PID: 4821
+[INFO] Health attempt 1/10
+[INFO] Running topic publishing health checks
+[INFO] Tip: make sure Gazebo is playing (not paused)
+[INFO] Checking map topic: /map
+Type: nav_msgs/msg/OccupancyGrid
+Publisher count: 1
+Subscription count: 1
+[PASS] map: received at least one message
+[INFO] Checking odom topic: /odom
+Type: nav_msgs/msg/Odometry
+Publisher count: 1
+Subscription count: 2
+[PASS] odom: received at least one message
+[INFO] Checking scan topic: /scan
+Type: sensor_msgs/msg/LaserScan
+Publisher count: 2
+Subscription count: 2
+[PASS] scan: received at least one message
+[PASS] Core planner inputs look healthy: map and odom are publishing.
+[INFO] Topic list snapshot
+/clicked_point
+/clock
+/cmd_vel
+/constraint_list
+/goal_pose
+/imu
+/initialpose
+/joint_states
+/landmark_poses_list
+/map
+/map_updates
+/move_base_simple/goal
+/odom
+/parameter_events
+/plan
+/robot_description
+/rosout
+/scan
+/scan_matched_points2
+/submap_list
+/tf
+/tf_static
+/trajectory_node_list
+[INFO] Topic info snapshot
+[INFO] ros2 topic info /map
+Type: nav_msgs/msg/OccupancyGrid
+Publisher count: 2
+Subscription count: 2
+[INFO] ros2 topic info /odom
+Type: nav_msgs/msg/Odometry
+Publisher count: 2
+Subscription count: 2
+[INFO] ros2 topic info /scan
+Type: sensor_msgs/msg/LaserScan
+Publisher count: 2
+Subscription count: 2
+[INFO] ros2 topic info /goal_pose
+Type: geometry_msgs/msg/PoseStamped
+Publisher count: 1
+Subscription count: 1
+[INFO] ros2 topic info /plan
+Type: nav_msgs/msg/Path
+Publisher count: 1
+Subscription count: 0
+[INFO] Sampling rate for map topic: /map
+average rate: 2.000
+	min: 0.004s max: 0.996s std dev: 0.49558s window: 4
+average rate: 2.000
+	min: 0.004s max: 0.996s std dev: 0.49563s window: 6
+[PASS] map rate detected
+[INFO] Sampling rate for odom topic: /odom
+average rate: 96.699
+	min: 0.000s max: 0.024s std dev: 0.01036s window: 97
+average rate: 96.025
+	min: 0.000s max: 0.024s std dev: 0.01039s window: 193
+[PASS] odom rate detected
+[INFO] Sampling rate for scan topic: /scan
+WARNING: topic [/scan] does not appear to be published yet
+average rate: 8.767
+	min: 0.000s max: 0.215s std dev: 0.09567s window: 11
+average rate: 9.130
+	min: 0.000s max: 0.215s std dev: 0.10000s window: 21
+average rate: 9.254
+	min: 0.000s max: 0.215s std dev: 0.10159s window: 31
+[PASS] scan rate detected
+[INFO] [1784994892.452209311] [dstar_planner_node]: D* Lite planner node ready. map=/map, goal=/goal_pose, odom=/odom, plan=/plan
+[INFO] Goal/plan attempt 1/6
+publisher: beginning loop
+publishing #1: geometry_msgs.msg.PoseStamped(header=std_msgs.msg.Header(stamp=builtin_interfaces.msg.Time(sec=0, nanosec=0), frame_id='map'), pose=geometry_msgs.msg.Pose(position=geometry_msgs.msg.Point(x=2.0, y=1.0, z=0.0), orientation=geometry_msgs.msg.Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)))
+
+
+[INFO] Goal/plan attempt 2/6
+Waiting for at least 1 matching subscription(s)...
+publisher: beginning loop
+publishing #1: geometry_msgs.msg.PoseStamped(header=std_msgs.msg.Header(stamp=builtin_interfaces.msg.Time(sec=0, nanosec=0), frame_id='map'), pose=geometry_msgs.msg.Pose(position=geometry_msgs.msg.Point(x=2.0, y=1.0, z=0.0), orientation=geometry_msgs.msg.Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)))
+
+
+[INFO] Goal/plan attempt 3/6
+publisher: beginning loop
+publishing #1: geometry_msgs.msg.PoseStamped(header=std_msgs.msg.Header(stamp=builtin_interfaces.msg.Time(sec=0, nanosec=0), frame_id='map'), pose=geometry_msgs.msg.Pose(position=geometry_msgs.msg.Point(x=2.0, y=1.0, z=0.0), orientation=geometry_msgs.msg.Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)))
+
+
+[INFO] Goal/plan attempt 4/6
+publisher: beginning loop
+publishing #1: geometry_msgs.msg.PoseStamped(header=std_msgs.msg.Header(stamp=builtin_interfaces.msg.Time(sec=0, nanosec=0), frame_id='map'), pose=geometry_msgs.msg.Pose(position=geometry_msgs.msg.Point(x=2.0, y=1.0, z=0.0), orientation=geometry_msgs.msg.Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)))
+
+
+[INFO] Goal/plan attempt 5/6
+publisher: beginning loop
+publishing #1: geometry_msgs.msg.PoseStamped(header=std_msgs.msg.Header(stamp=builtin_interfaces.msg.Time(sec=0, nanosec=0), frame_id='map'), pose=geometry_msgs.msg.Pose(position=geometry_msgs.msg.Point(x=2.0, y=1.0, z=0.0), orientation=geometry_msgs.msg.Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)))
+
+
+[INFO] Goal/plan attempt 6/6
+publisher: beginning loop
+publishing #1: geometry_msgs.msg.PoseStamped(header=std_msgs.msg.Header(stamp=builtin_interfaces.msg.Time(sec=0, nanosec=0), frame_id='map'), pose=geometry_msgs.msg.Pose(position=geometry_msgs.msg.Point(x=2.0, y=1.0, z=0.0), orientation=geometry_msgs.msg.Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)))
+
+
+[FAIL] Plan output not detected after retries
+[FAIL] End-to-end verification FAILED
+(base) cloud@xubuntu:~/Downloads$ 

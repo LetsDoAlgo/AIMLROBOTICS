@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title> </title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+</style>
+  <link href="data:text/css,*{box-sizing:border-box}body{font-family:Segoe UI,Arial,sans-serif;max-width:900px;margin:auto;padding:40px;font-size:15px;line-height:1.8;color:%23222}h1{font-size:22px;color:%23000;border-bottom:3px solid %23000;padding-bottom:10px;margin-top:30px}h2{font-size:18px;color:%23000;border-bottom:2px solid %23444;padding-bottom:8px;margin-top:28px}h3{font-size:16px;color:%23111;margin-top:22px}table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14px}th,td{border:1px solid %23bbb;padding:10px 14px;text-align:left;vertical-align:top}th{background:%23e8e8e8;font-weight:bold;color:%23000}tr:nth-child(even){background:%23f9f9f9}ul,ol{padding-left:28px;margin:10px 0}li{margin-bottom:6px}strong{color:%23000}hr{border:none;border-top:1px solid %23ccc;margin:30px 0}p{margin:10px 0}@media print{body{padding:20px;font-size:13px}h2,h3{page-break-after:avoid}}" rel="stylesheet" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title"> </h1>
+</header>
+<h1 id="part-b-individual-reflection-3-marks">Part B – Individual
+Reflection (3 Marks)</h1>
+<table>
+<tbody>
+<tr>
+<td><strong>Name</strong></td>
+<td>Ayushi Gupta</td>
+</tr>
+<tr>
+<td><strong>BITS ID</strong></td>
+<td>2024AC05720</td>
+</tr>
+<tr>
+<td><strong>Course</strong></td>
+<td>AIML ZG528 – Assignment 1</td>
+</tr>
+<tr>
+<td><strong>Date</strong></td>
+<td>June 2026</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="template-for-form-submission">Template for Form Submission</h2>
+<hr />
+<h3 id="workplace-connection-1-mark">1. Workplace Connection (1
+Mark)</h3>
+<ul>
+<li>I currently work at ABB in the digital domain — building software
+solutions for industrial automation. While my day-to-day work involves
+data platforms and application development, ABB Robotics is where I
+aspire to contribute next.</li>
+<li>Two concepts from this assignment stood out as relevant to that
+aspirational direction:
+<ul>
+<li><strong>Probabilistic motion modeling</strong> — robots in ABB’s
+factories never move with perfect precision. Payload variations,
+mechanical wear, and environmental factors introduce uncertainty that
+software systems need to handle intelligently.</li>
+<li><strong>Beam-based sensor models</strong> — factory floors have
+dynamic obstacles (forklifts, workers, reflective metal surfaces) that
+sensors must account for, and understanding how to model this
+probabilistically is essential for anyone building robotics
+software.</li>
+</ul></li>
+<li>This assignment gave me a concrete technical foundation that bridges
+my current software skills with the robotics domain I want to move
+into.</li>
+</ul>
+<hr />
+<h3 id="learning-reflection-1-mark">2. Learning Reflection (1 Mark)</h3>
+<ul>
+<li>The biggest takeaway was realizing how <strong>motion uncertainty
+compounds over time</strong>. Even small noise in velocity commands
+leads to significant positional drift. In ABB Robotics, this directly
+affects robotic arm repeatability — small joint-level errors accumulate
+through the kinematic chain and result in end-effector deviation during
+precision welding or assembly tasks.</li>
+<li>I found it eye-opening how the beam sensor model handles the
+“unexpected short reading” case. When a forklift or worker suddenly
+crosses a sensor’s field, the exponential short-reading component
+captures this naturally — no special detection logic is needed. It just
+falls out of the math.</li>
+<li>Working with the velocity motion model taught me how much tuning the
+noise parameters (α values) matters. A robot carrying a heavy payload
+behaves very differently from one running unloaded — and as someone from
+the software side, I now understand why robotics teams spend so much
+effort on parameter calibration.</li>
+</ul>
+<hr />
+<h3 id="skill-development-1-mark">3. Skill Development (1 Mark)</h3>
+<ul>
+<li>This assignment helped me bridge the gap between textbook
+probability theory (Gaussian distributions, mixture models) and actual
+working code. I can now implement these models in Python and produce
+visualizations that communicate results clearly.</li>
+<li>I developed a stronger sense of systems thinking — the motion model
+and sensor model are not independent; they must work together for
+reliable autonomy.</li>
+<li>As someone working in ABB’s digital domain, I also gained an
+appreciation for how physical-world factors (payload, wear, dynamic
+obstacles) drive the software and algorithm choices in robotics.</li>
+<li>Going forward, I plan to leverage these skills to:
+<ul>
+<li>Build digital-twin simulations that incorporate probabilistic motion
+models for ABB’s robotic arm cells</li>
+<li>Contribute to software modules that handle sensor fusion and
+uncertainty estimation</li>
+<li>Position myself for a transition into ABB Robotics, where these
+skills are directly needed</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="google-form-questions-responses">Google Form Questions &amp;
+Responses</h2>
+<hr />
+<p><strong>Q: Is there a scope of using Mobile Robots in your work
+environment?</strong></p>
+<p><strong>A:</strong> - Not in my current digital/software role
+directly, but absolutely in the broader ABB context. - ABB Robotics
+operates factory floors where material transport between robotic arm
+cells is still largely manual. There is clear scope for mobile robots to
+automate inter-station logistics — and as someone building digital
+solutions, I could contribute to the software and navigation stack for
+such deployments.</p>
+<hr />
+<p><strong>Q: How does this assignment relate to your current or
+aspirational workplace? Which robotics concept(s) did you find directly
+applicable to your field?</strong></p>
+<p><strong>A:</strong> - I currently work in ABB’s digital domain
+(software and data solutions for industrial automation). My aspirational
+direction is ABB Robotics, where these concepts are directly applied
+every day. - The <strong>probabilistic motion model</strong> is highly
+relevant — ABB’s robotic arms (IRB series) face positional uncertainty
+from payload variations, joint wear, and thermal drift. Building
+software that accounts for this uncertainty is exactly where my skills
+could contribute. - The <strong>beam-based sensor model</strong> applies
+to how safety sensors around robotic arm cells detect human workers and
+dynamic obstacles — understanding this from a software perspective helps
+me design better monitoring and decision-making systems.</p>
+<hr />
+<p><strong>Q: What practical insights did you gain about robot motion or
+sensing from the implementation?</strong></p>
+<p><strong>A:</strong> - I saw firsthand how motion uncertainty
+accumulates rapidly. Even small errors compound into significant drift —
+this is why ABB’s robotic arms need regular recalibration, especially
+after payload changes or extended operation. - The sensor model’s four
+components (hit, short, max, random) map neatly to real factory
+scenarios: - Forklift suddenly crossing a sensor beam → short reading -
+Long open aisles → max-range return - Reflective metal surfaces on
+factory floors → random noise component - Coming from a software
+background, this gave me a much better intuition for what the algorithms
+need to handle — it’s not just clean data going into neat functions.</p>
+<hr />
+<p><strong>Q: What was the most challenging or eye-opening part of the
+task?</strong></p>
+<p><strong>A:</strong> - The most eye-opening moment was visualizing how
+drastically the noise parameters (α values) change the trajectory
+spread. - When I cranked up the noise to simulate high-uncertainty
+conditions, the positional uncertainty grew so large that the robot
+would completely miss its target — this showed me, viscerally, why ABB
+Robotics invests so heavily in precision encoders and calibration
+routines. - As someone from the digital side, it made me appreciate that
+robotics software isn’t just about clean algorithms — it’s about dealing
+with messy physical reality, and that’s what makes it interesting to
+me.</p>
+<hr />
+<p><strong>Q: How did this activity strengthen your technical or
+analytical thinking skills?</strong></p>
+<p><strong>A:</strong> - It sharpened my ability to go from a
+mathematical model on paper to working code, and then back to practical
+interpretation of the results. - I now instinctively think about robot
+performance in terms of distributions and confidence bounds, not just
+single deterministic numbers. - This probabilistic mindset is valuable
+even in my current digital role, and even more so for ABB Robotics: -
+Designing software that characterizes arm repeatability under varying
+payloads - Building dashboards that show cycle time distributions, not
+just averages - Understanding why safety zones need probabilistic
+margins, not just fixed distances</p>
+<hr />
+<p><strong>Q: How would you apply these skills in a future project or
+work situation?</strong></p>
+<p><strong>A:</strong> - I would build digital-twin simulations that use
+probabilistic motion models to predict robotic arm behavior under
+different configurations — helping ABB Robotics teams test scenarios
+virtually before deploying on the factory floor. - If I transition into
+a robotics software role, I could apply sensor model concepts to design
+navigation systems for mobile robots that handle reflective metal
+surfaces and dynamic human workers in ABB’s factories. - Even in my
+current digital role, I can apply these skills to build predictive
+maintenance systems that monitor when motion uncertainty crosses
+acceptable thresholds — flagging robots that need recalibration before
+they produce defective parts.</p>
+<hr />
+<p><strong>Q: Which specific mobile robot sensing component (e.g.,
+LiDAR, Camera, GPS etc.,) is most critical for tasks in your domain,
+based on what you learned?</strong></p>
+<p><strong>A:</strong> - For mobile robots in an industrial setting like
+ABB’s factories, <strong>LiDAR</strong> would be the most critical
+sensing component. - Factory floors are structured environments with
+metallic surfaces, forklifts, and human workers — LiDAR handles all of
+these reliably. - Unlike cameras, LiDAR works regardless of lighting
+conditions. Unlike GPS, it works indoors. - After this assignment, I can
+clearly see how the beam-based sensor model maps to real industrial
+LiDAR behavior — reflective surfaces causing unexpected short readings,
+and long open corridors triggering max-range returns.</p>
+<hr />
+<p><strong>Q: Based on the assignment, how much do you agree that
+integrating AI/ML is essential for the successful deployment of mobile
+robots in complex real-world scenarios?</strong></p>
+<p><strong>A:</strong> - <strong>5 (Strongly Agree)</strong> - After
+implementing these models, it is clear that probabilistic reasoning and
+ML-based perception are not optional — they are necessary for handling
+uncertainty, dynamic obstacles, and variability in real factory
+environments. - Pure deterministic programming simply cannot cope with
+the complexity of shared human-robot workspaces.</p>
+<hr />
+<p><strong>Q: How would you rate the effectiveness of the AI/ML approach
+learned in the assignment for solving a practical problem in your
+field?</strong></p>
+<p><strong>A:</strong> - <strong>4 out of 5</strong> - The probabilistic
+approach is highly effective for modeling motion and sensor uncertainty
+in industrial robotics settings. - I rated it 4 rather than 5 because
+real ABB Robotics deployments also require integration with PLC systems,
+safety-rated controllers (like SafeMove), and industrial communication
+protocols — aspects that go beyond what this assignment covered, but are
+essential for anyone wanting to work in that space.</p>
+<hr />
+<p><strong>Q: Please provide an example of a specific task in your
+domain where a mobile robot could significantly improve
+efficiency.</strong></p>
+<p><strong>A:</strong> - A clear use case in ABB’s robotics factories is
+<strong>automated material handling between robotic arm welding
+cells</strong>. - Today, operators manually load metal parts onto carts
+and push them between IRB arm stations — it is slow and ties up skilled
+workers. - An AMR with LiDAR-based navigation could: - Pick up finished
+parts from one robotic arm cell autonomously - Navigate across the
+factory floor, avoiding forklifts and workers in real time - Deliver
+parts to the next cell for assembly - Estimated impact: ~60% reduction
+in inter-station transfer time, freeing operators for higher-value work
+like quality inspection and robot programming. - From my digital
+perspective, I could contribute by building the fleet management
+software and route optimization algorithms for such a deployment.</p>
+<hr />
+<p><em>Note: Submit these responses through the official BITS email form
+linked in the assignment PDF.</em></p>
+</body>
+</html>
