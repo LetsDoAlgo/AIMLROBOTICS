@@ -1,0 +1,65 @@
+flowchart TD
+    subgraph ASS1["🏠 ASSIGNMENT 1 — Probabilistic Models"]
+        direction TB
+        A1([🤖 Restaurant AMR\nDifferential Drive]) --> A2[Sensor Suite\nLiDAR · Camera · IMU · Encoders]
+        A2 --> A3[Velocity-Based\nMotion Model\nα₁–α₆ Gaussian Noise]
+        A2 --> A4[Beam Sensor Model\np_hit · p_short · p_max · p_rand]
+        A3 --> A5[Monte Carlo\nTrajectory Simulation\n100 paths · 1σ / 2σ ellipses]
+        A4 --> A6[Sensor Readings\nper Pose]
+        A3 --> A7[Floor Condition Analysis\nRubber · Wood · Wet]
+        A5 --> A8[(Pose Uncertainty\nQuantified)]
+        A6 --> A8
+        A7 --> A8
+        A8 --> A9[Workplace Evaluation\nABB Robotics Context]
+    end
+
+    subgraph ASS2["🗺️ ASSIGNMENT 2 — Full Navigation Stack"]
+        direction TB
+        B0([Shared Restaurant Map\n10m × 8m Grid]) --> B1
+
+        B1[Part A: MCL\nMonte Carlo Localization]
+        B1 --> B1a[Predict particles\nvia motion model]
+        B1a --> B1b[Weight by scan\nlikelihood]
+        B1b --> B1c[Estimate pose\nfrom particles]
+        B1c --> B1d[Resample particles]
+        B1d --> B1e[(Estimated Path\n+ Error Curve)]
+
+        B0 --> B2[Part B: Grid SLAM\nOccupancy Mapping]
+        B2 --> B2a[Lawnmower\nWaypoints]
+        B2a --> B2b[Ray-Cast Beams\nfree + occupied evidence]
+        B2b --> B2c[Log-Odds Updates]
+        B2c --> B2d[(Learned Map\nIoU vs Ground Truth)]
+
+        B2d --> B3[Part C: D* Lite\nPath Planning]
+        B3 --> B3a[Initial Path Compute]
+        B3a --> B3b[Insert Dynamic Obstacle]
+        B3b --> B3c[Incremental Replan\naffected vertices only]
+        B3c --> B3d[(Replanned Path)]
+
+        B0 --> B4[Part D: RL\nFrontier Exploration]
+        B4 --> B4a[Detect frontier cells]
+        B4a --> B4b[ε-greedy frontier pick]
+        B4b --> B4c[Simulate scan update]
+        B4c --> B4d[Reward = new cells revealed]
+        B4d --> B4e[Q-update: Q += α·reward - Q]
+        B4e --> B4f[(Learned Q-table\nEfficient Coverage)]
+
+        B2d --> B5[Part E: CNN Planner\nImitation of D*]
+        B5 --> B5a[Generate random maps\nQuery D* labels]
+        B5a --> B5b[Build 2-channel\nlocal observation]
+        B5b --> B5c[Train CNN\ncross-entropy loss]
+        B5c --> B5d[Rollout on\nlearned map]
+        B5d --> B5e[(CNN Path\nvs D* Path)]
+    end
+
+    subgraph PAPER["📄 PART A — Research Paper: Enhanced PPO"]
+        direction TB
+        C1([TurtleBot3\nGazebo 10×10m]) --> C2[16-dim Observation\n10 LiDAR + vel + goal + yaw]
+        C2 --> C3[ResBlock Actor-Critic\nPPO Clipped Objective]
+        C3 --> C4[2D Continuous Action\nlinear via sigmoid · angular via tanh]
+        C4 --> C5[Advanced Reward\ngoal shaping + wall penalty]
+        C5 --> C6[(Mapless Navigation\nBest success rate in clutter)]
+    end
+
+    ASS1 --> |"Motion & sensor models\nreused in MCL + SLAM"| ASS2
+    ASS2 --> |"Classical vs learned\npipeline comparison"| PAPER

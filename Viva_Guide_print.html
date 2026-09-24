@@ -1,0 +1,2732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AIML ZG528 — Viva Guide</title>
+
+<style>
+  @page { size: A4; margin: 18mm 16mm 18mm 16mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Calibri, Arial, sans-serif;
+    font-size: 10.5pt; color: #111; line-height: 1.55;
+    max-width: 100%;
+  }
+  h1 {
+    font-size: 20pt; color: #002855;
+    border-bottom: 3px solid #002855; padding-bottom: 6px;
+    margin-top: 0;
+  }
+  h2 {
+    font-size: 14pt; color: #004A8F;
+    border-bottom: 2px solid #b8d4f0; padding-bottom: 4px;
+    margin-top: 26px; page-break-after: avoid;
+  }
+  h3 {
+    font-size: 12pt; color: #005f8a;
+    margin-top: 18px; page-break-after: avoid;
+  }
+  h4 {
+    font-size: 10.5pt; color: #444;
+    margin-top: 12px; font-style: italic; page-break-after: avoid;
+  }
+  /* ── tables ── */
+  table {
+    border-collapse: collapse; width: 100%;
+    margin: 10px 0; font-size: 9.5pt;
+    page-break-inside: auto;
+  }
+  thead tr { background: #002855; color: #fff; }
+  th { padding: 6px 9px; text-align: left; font-weight: 600; }
+  td { border: 1px solid #b8cfe4; padding: 5px 9px; vertical-align: top; }
+  tr:nth-child(even) td { background: #eef4fc; }
+  /* ── code ── */
+  code {
+    background: #f3f3f3; padding: 1px 5px;
+    border-radius: 3px; font-family: Consolas, monospace; font-size: 9.5pt;
+  }
+  pre {
+    background: #f3f3f3; padding: 10px 14px; border-radius: 5px;
+    border-left: 4px solid #002855; font-size: 9pt;
+    white-space: pre-wrap; word-break: break-word; page-break-inside: avoid;
+  }
+  pre code { background: none; padding: 0; }
+  /* ── blockquote ── */
+  blockquote {
+    border-left: 4px solid #004A8F; margin: 8px 0;
+    padding: 6px 14px; background: #eaf2ff; color: #222;
+    page-break-inside: avoid;
+  }
+  /* ── misc ── */
+  hr  { border: none; border-top: 1px solid #ccc; margin: 16px 0; }
+  a   { color: #004A8F; text-decoration: none; }
+  ul,ol { margin: 4px 0 4px 22px; }
+  li  { margin-bottom: 2px; }
+  /* ── mermaid diagrams ── */
+  .mermaid { margin: 14px 0; text-align: center; page-break-inside: avoid; }
+  svg { max-width: 100%; height: auto; }
+</style>
+
+</head>
+<body>
+<h1 id="aiml-zg528-viva-guide">AIML ZG528 – Viva Guide</h1>
+
+<h2 id="assignments-1-2-hospitality-bot-restaurant-food-delivery">Assignments 1 &amp; 2 | Hospitality Bot (Restaurant Food Delivery)</h2>
+
+<p><strong>Ayushi Gupta | 2024AC05720</strong></p>
+
+<hr />
+
+<h2 id="table-of-contents">Table of Contents</h2>
+
+<ul>
+<li><a href="#beginners-glossary">Beginner's Glossary</a></li>
+<li><a href="#quick-reference-map">Quick Reference Map</a></li>
+<li><a href="#full-pipeline-diagram">Full Pipeline Diagram</a></li>
+</ul>
+
+<hr />
+
+<ul>
+<li><p><strong><a href="#part-1--assignment-1">PART 1 — Assignment 1</a></strong></p>
+
+<ul>
+<li><a href="#11-robot-system-description">1.1 Robot System Description</a></li>
+<li><a href="#12-velocity-based-motion-model">1.2 Velocity-Based Motion Model</a></li>
+<li><a href="#13-beam-based-sensor-model">1.3 Beam-Based Sensor Model</a></li>
+<li><a href="#14-workplace-evaluation-question-3">1.4 Workplace Evaluation</a></li>
+</ul></li>
+<li><p><strong><a href="#part-2--assignment-2">PART 2 — Assignment 2</a></strong></p>
+
+<ul>
+<li><a href="#21-overall-navigation-pipeline">2.1 Overall Navigation Pipeline</a></li>
+<li><a href="#pipeline--step-by-step">2.1 → Pipeline Step-by-Step (STEP 0 to STEP 5 + data flow)</a></li>
+<li><a href="#particles-vs-waypoints--what-are-they-and-where-are-they-used">2.1a Particles vs Waypoints — Key Difference</a></li>
+<li><a href="#particles">↳ What are PARTICLES and where used?</a></li>
+<li><a href="#waypoints">↳ What are WAYPOINTS and where used?</a></li>
+<li><a href="#22-part-a--monte-carlo-localization-mcl">2.2 Part A — Monte Carlo Localization (MCL)</a></li>
+<li><a href="#why-mcl-and-not-the-alternatives">↳ Why MCL and not EKF / Odometry / Histogram?</a></li>
+<li><a href="#23-part-b--grid-slam-occupancy-mapping">2.3 Part B — Grid SLAM (Occupancy Mapping)</a></li>
+<li><a href="#how-occupancy-grid-and-log-odds-are-linked">↳ How Occupancy Grid and Log-Odds are Linked</a></li>
+<li><a href="#why-grid-slam-occupancy-mapping-and-not-the-alternatives">↳ Why Grid SLAM and not Graph SLAM / Visual SLAM?</a></li>
+<li><a href="#24-part-c--d-lite-path-planning">2.4 Part C — D* Lite Path Planning</a></li>
+<li><a href="#why-d-lite-and-not-the-alternatives">↳ Why D* Lite and not A* / Dijkstra / RRT?</a></li>
+<li><a href="#25-part-d--rl-for-frontier-exploration">2.5 Part D — RL Frontier Exploration</a></li>
+<li><a href="#why-rl-q-learning-for-frontier-selection-and-not-the-alternatives">↳ Why RL and not Greedy / Random frontier?</a></li>
+<li><a href="#26-part-e--cnn-planner-imitation-of-d">2.6 Part E — CNN Planner (Imitation of D*)</a></li>
+<li><a href="#why-cnn-imitation-learning-and-not-the-alternatives">↳ Why CNN and not DQN / PPO / RNN?</a></li>
+<li><a href="#27-part-a-research-paper--deep-rl-with-enhanced-ppo">2.7 Research Paper — Enhanced PPO</a></li>
+</ul></li>
+<li><p><strong><a href="#part-3--cross-assignment-connections">PART 3 — Cross-Assignment Connections</a></strong></p>
+
+<ul>
+<li><a href="#part-3--cross-assignment-connections">3.1 How Ass-1 feeds Ass-2</a></li>
+<li><a href="#why-do-we-use-both-mcl-and-slam-arent-they-contradictory">3.2 Why use BOTH MCL and SLAM?</a></li>
+</ul></li>
+<li><p><strong><a href="#part-4--formula-cheat-sheet">PART 4 — Formula Cheat Sheet</a></strong></p></li>
+<li><p><strong><a href="#part-5--top-20-viva-questions-rapid-fire">PART 5 — Top 20 Rapid-Fire Q&amp;A</a></strong></p></li>
+<li><p><strong><a href="#part-6--how-to-explain-each-module-in-30-seconds">PART 6 — 30-Second Verbal Scripts for Viva</a></strong></p></li>
+<li><p><strong><a href="#part-7--pipeline-decisions-at-a-glance">PART 7 — Pipeline Decisions At A Glance (Full Summary Table)</a></strong></p></li>
+<li><p><strong><a href="#part-8--tricky--surprise-viva-questions">PART 8 — Tricky &amp; Surprise Viva Questions</a></strong></p></li>
+<li><p><strong><a href="#part-9--failure-modes-what-can-go-wrong">PART 9 — Failure Modes: What Can Go Wrong?</a></strong></p></li>
+<li><p><strong><a href="#part-10--computational-complexity-quick-reference">PART 10 — Computational Complexity Quick Reference</a></strong></p></li>
+<li><p><strong><a href="#part-11--why-not-bio-inspired-algorithms">PART 11 — Why Not Bio-Inspired Algorithms? (ACO, PSO, Firefly, GA)</a></strong></p></li>
+</ul>
+
+<hr />
+
+<h2 id="beginners-glossary">Beginner's Glossary</h2>
+
+<blockquote>
+  <p><strong>New to robotics? Start here.</strong> These are the key words used throughout this guide — in plain English.</p>
+</blockquote>
+
+<table>
+<thead>
+<tr>
+  <th>Term</th>
+  <th>Plain English meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>AMR</strong></td>
+  <td>Autonomous Mobile Robot — a robot that moves on its own without a human driving it</td>
+</tr>
+<tr>
+  <td><strong>Differential Drive</strong></td>
+  <td>A robot with two independently controlled wheels (like a wheelchair) — speed the wheels differently to turn</td>
+</tr>
+<tr>
+  <td><strong>Proprioceptive Sensor</strong></td>
+  <td>Sensor that feels the robot's own body (like how you feel your muscles moving) — e.g. wheel encoders</td>
+</tr>
+<tr>
+  <td><strong>Exteroceptive Sensor</strong></td>
+  <td>Sensor that looks at the outside world — e.g. camera, LiDAR</td>
+</tr>
+<tr>
+  <td><strong>LiDAR</strong></td>
+  <td>"Laser radar" — fires laser beams in all directions and measures how far they travel before hitting something</td>
+</tr>
+<tr>
+  <td><strong>IMU</strong></td>
+  <td>Inertial Measurement Unit — measures tilt, rotation speed, and acceleration (like a phone's motion sensor)</td>
+</tr>
+<tr>
+  <td><strong>Odometry</strong></td>
+  <td>Estimating position by counting wheel rotations — like estimating distance walked by counting steps</td>
+</tr>
+<tr>
+  <td><strong>Pose</strong></td>
+  <td>The robot's complete position: (x coordinate, y coordinate, direction it is facing θ)</td>
+</tr>
+<tr>
+  <td><strong>Gaussian Noise</strong></td>
+  <td>Random errors that follow a bell-curve pattern — most errors are small, big errors are rare</td>
+</tr>
+<tr>
+  <td><strong>Probabilistic Model</strong></td>
+  <td>A model that doesn't give one fixed answer but a range of possibilities with likelihoods</td>
+</tr>
+<tr>
+  <td><strong>Particle</strong></td>
+  <td>In MCL — one hypothesis (guess) about where the robot might be. Hundreds run in parallel</td>
+</tr>
+<tr>
+  <td><strong>Occupancy Grid</strong></td>
+  <td>A map divided into square cells; each cell stores whether it is free (empty) or occupied (wall/obstacle)</td>
+</tr>
+<tr>
+  <td><strong>Log-Odds</strong></td>
+  <td>A clever math trick to represent probability — makes repeated sensor updates simple addition instead of multiplication</td>
+</tr>
+<tr>
+  <td><strong>SLAM</strong></td>
+  <td>Simultaneous Localization And Mapping — building a map and figuring out your position at the same time</td>
+</tr>
+<tr>
+  <td><strong>Frontier Cell</strong></td>
+  <td>A cell on the edge between known (explored) and unknown (unexplored) map area</td>
+</tr>
+<tr>
+  <td><strong>D* Lite</strong></td>
+  <td>A path-planning algorithm that can quickly fix its route when an obstacle appears, without replanning from scratch</td>
+</tr>
+<tr>
+  <td><strong>RL (Reinforcement Learning)</strong></td>
+  <td>Teaching a computer to make decisions by giving it rewards for good choices and no reward (or penalties) for bad ones</td>
+</tr>
+<tr>
+  <td><strong>Q-value</strong></td>
+  <td>In RL — a score that represents how good an action is in a given situation</td>
+</tr>
+<tr>
+  <td><strong>ε-greedy</strong></td>
+  <td>A strategy that mostly picks the best known action but occasionally tries something random (to discover better options)</td>
+</tr>
+<tr>
+  <td><strong>CNN</strong></td>
+  <td>Convolutional Neural Network — a type of AI that learns to recognize patterns in grid/image data</td>
+</tr>
+<tr>
+  <td><strong>Imitation Learning</strong></td>
+  <td>Training an AI by showing it examples of an expert's decisions, so it learns to copy the expert</td>
+</tr>
+<tr>
+  <td><strong>PPO</strong></td>
+  <td>Proximal Policy Optimization — a popular algorithm to train robots using trial-and-error without making dangerously large updates</td>
+</tr>
+<tr>
+  <td><strong>Residual Block</strong></td>
+  <td>A neural network building block that adds a "shortcut" connection, helping gradients flow and preventing training from getting stuck</td>
+</tr>
+<tr>
+  <td><strong>Mapless Navigation</strong></td>
+  <td>The robot finds its way using only its current sensor readings and goal direction — no pre-built map needed</td>
+</tr>
+<tr>
+  <td><strong>IoU</strong></td>
+  <td>Intersection over Union — a score from 0 to 1 measuring how closely the robot's built map matches the true map</td>
+</tr>
+<tr>
+  <td><strong>Dead-reckoning</strong></td>
+  <td>Estimating current position from past position + speed + direction — accumulates error over time with no correction</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<h2 id="quick-reference-map">Quick Reference Map</h2>
+
+<table>
+<thead>
+<tr>
+  <th>Assignment</th>
+  <th>Topics Covered</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>Ass-1</strong></td>
+  <td>Robot description, Probabilistic motion model, Beam sensor model, Workplace evaluation</td>
+</tr>
+<tr>
+  <td><strong>Ass-2</strong></td>
+  <td>MCL localization, Grid SLAM, D* Lite path planning, RL frontier exploration, CNN planner, Deep RL paper (PPO)</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<h2 id="full-pipeline-diagram">Full Pipeline Diagram</h2>
+
+<div class="mermaid">
+flowchart TD
+    subgraph ASS1["ASSIGNMENT 1 — Probabilistic Models"]
+        direction TB
+        A1([Robot AMR\nDifferential Drive]) --> A2[Sensor Suite\nLiDAR · Camera · IMU · Encoders]
+        A2 --> A3[Velocity-Based\nMotion Model\nα₁–α₆ Gaussian Noise]
+        A2 --> A4[Beam Sensor Model\np_hit · p_short · p_max · p_rand]
+        A3 --> A5[Monte Carlo\nTrajectory Simulation\n100 paths · 1σ / 2σ ellipses]
+        A4 --> A6[Sensor Readings\nper Pose]
+        A3 --> A7[Floor Condition Analysis\nRubber · Wood · Wet]
+        A5 --> A8[(Pose Uncertainty\nQuantified)]
+        A6 --> A8
+        A7 --> A8
+        A8 --> A9[Workplace Evaluation\nABB Robotics Context]
+    end
+
+    subgraph ASS2["ASSIGNMENT 2 — Full Navigation Stack"]
+        direction TB
+        B0([Shared Restaurant Map\n10m × 8m Grid]) --> B1
+
+        B1[Part A: MCL\nMonte Carlo Localization]
+        B1 --> B1a[Predict particles\nvia motion model]
+        B1a --> B1b[Weight by scan\nlikelihood]
+        B1b --> B1c[Estimate pose\nfrom particles]
+        B1c --> B1d[Resample particles]
+        B1d --> B1e[(Estimated Path\n+ Error Curve)]
+
+        B0 --> B2[Part B: Grid SLAM\nOccupancy Mapping]
+        B2 --> B2a[Lawnmower Waypoints]
+        B2a --> B2b[Ray-Cast Beams\nfree + occupied evidence]
+        B2b --> B2c[Log-Odds Updates]
+        B2c --> B2d[(Learned Map\nIoU vs Ground Truth)]
+
+        B2d --> B3[Part C: D* Lite\nPath Planning]
+        B3 --> B3a[Initial Path Compute]
+        B3a --> B3b[Insert Dynamic Obstacle]
+        B3b --> B3c[Incremental Replan\naffected vertices only]
+        B3c --> B3d[(Replanned Path)]
+
+        B0 --> B4[Part D: RL\nFrontier Exploration]
+        B4 --> B4a[Detect frontier cells]
+        B4a --> B4b[ε-greedy frontier pick]
+        B4b --> B4c[Simulate scan update]
+        B4c --> B4d[Reward = new cells revealed]
+        B4d --> B4e[Q-update]
+        B4e --> B4f[(Learned Q-table\nEfficient Coverage)]
+
+        B2d --> B5[Part E: CNN Planner\nImitation of D*]
+        B5 --> B5a[Generate maps\nQuery D* labels]
+        B5a --> B5b[2-channel local\nobservation]
+        B5b --> B5c[Train CNN\ncross-entropy loss]
+        B5c --> B5d[Rollout on\nlearned map]
+        B5d --> B5e[(CNN Path\nvs D* Path)]
+    end
+
+    subgraph PAPER["PART A — Research Paper: Enhanced PPO"]
+        direction TB
+        C1([TurtleBot3\nGazebo 10×10m]) --> C2[16-dim Observation\n10 LiDAR + vel + goal + yaw]
+        C2 --> C3[ResBlock Actor-Critic\nPPO Clipped Objective]
+        C3 --> C4[2D Continuous Action\nlinear via sigmoid · angular via tanh]
+        C4 --> C5[Advanced Reward\ngoal shaping + wall penalty]
+        C5 --> C6[(Mapless Navigation\nBest success rate in clutter)]
+    end
+
+    ASS1 --> |"Motion & sensor models\nreused in MCL + SLAM"| ASS2
+    ASS2 --> |"Classical vs learned\npipeline comparison"| PAPER
+
+</div>
+
+<hr />
+
+<h2 id="part-1-assignment-1">PART 1 — ASSIGNMENT 1</h2>
+
+<blockquote>
+  <p><strong>Big picture (Assignment 1 in one sentence):</strong>
+  We build the mathematical foundation — how does the robot <em>move</em> (motion model) and how does it <em>see</em> (sensor model) — using probability so the robot "knows what it doesn't know."</p>
+</blockquote>
+
+<hr />
+
+<h3 id="11-robot-system-description">1.1 Robot System Description</h3>
+
+<blockquote>
+  <p><strong>In simple words:</strong> We are designing a self-driving food delivery robot for a restaurant. Before writing any code, we describe <em>what</em> the robot is, <em>what sensors it has</em>, and <em>why</em> those sensors are the right choice for a noisy, busy environment.</p>
+</blockquote>
+
+<p><strong>Q: What type of robot is used and what does it do?</strong>
+- Autonomous Mobile Robot (AMR) on a differential-drive platform.
+- Task: Deliver food from kitchen counter to dining tables autonomously.
+- Environment: 10 m × 8 m indoor restaurant; kitchen + dining area.</p>
+
+<p><strong>Q: What are the key challenges of the restaurant environment?</strong>
+- Dynamic obstacles: waiters walking, guests standing up, chairs pulled out.
+- Floor surface variation: rubber mat (kitchen), wooden/tile (dining), wet/spill zones.
+- Safety constraints: must never collide with people or spill food; must operate quietly.</p>
+
+<p><strong>Q: What sensors does the robot use and why?</strong></p>
+
+<table>
+<thead>
+<tr>
+  <th>Sensor</th>
+  <th>Type</th>
+  <th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Wheel Encoders (Optical Rotary)</td>
+  <td>Proprioceptive</td>
+  <td>Dead-reckoning — provides (v, ω) for motion model</td>
+</tr>
+<tr>
+  <td>IMU (Gyroscope + Accelerometer)</td>
+  <td>Proprioceptive</td>
+  <td>Corrects odometry drift; compensates wheel slip on wet floors (α₅, α₆)</td>
+</tr>
+<tr>
+  <td>2D LiDAR (RPLIDAR A2, 360°)</td>
+  <td>Exteroceptive</td>
+  <td>Obstacle detection — modeled by beam sensor (p<em>hit, p</em>short, p<em>max, p</em>rand)</td>
+</tr>
+<tr>
+  <td>RGB-D Camera (Intel RealSense D435)</td>
+  <td>Exteroceptive</td>
+  <td>Table number recognition, close-range obstacle avoidance</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<h3 id="12-velocity-based-motion-model">1.2 Velocity-Based Motion Model</h3>
+
+<blockquote>
+  <p><strong>In simple words:</strong> When you tell the robot "go straight at 0.5 m/s", it doesn't go <em>perfectly</em> straight — wheels slip, motors wobble, floors are uneven. The motion model mathematically describes this imperfection using Gaussian (bell-curve) noise, so we can predict <em>where the robot probably ended up</em> rather than assuming it went exactly where commanded.</p>
+  
+  <p><strong>Analogy:</strong> Like throwing a dart — you aim at the bullseye, but there's always a small random scatter around where it lands. With more throws (more motion steps) the scatter adds up.</p>
+</blockquote>
+
+<p><strong>Q: What is the velocity-based motion model?</strong>
+- Takes commanded velocities (v, ω) and adds Gaussian noise via 6 parameters (α₁–α₆).
+- Uses circular-arc kinematics to compute the robot's new pose.
+- Models real-world imperfections: wheel slip, motor imprecision.</p>
+
+<p><strong>Q: What do the α parameters represent?</strong>
+- α₁, α₂: noise in translation due to rotational and translational velocity.
+- α₃, α₄: noise in rotation due to translational and rotational velocity.
+- α₅, α₆: extra noise terms (used by IMU-correction to compensate slip).
+- Higher α → more uncertain motion (e.g., wet floor = higher α).</p>
+
+<blockquote>
+  <p><strong>Beginner tip:</strong> Think of α values as "how wobbly is this surface?" A rubber mat gets low α (predictable), a wet spill zone gets high α (very unpredictable). The robot uses these numbers to spread its uncertainty appropriately.</p>
+</blockquote>
+
+<p><strong>Q: What are the kinematics equations?</strong></p>
+
+<p>$$x' = x - \frac{\hat{v}}{\hat{\omega}}\sin\theta + \frac{\hat{v}}{\hat{\omega}}\sin(\theta + \hat{\omega}\Delta t)$$</p>
+
+<p>$$y' = y + \frac{\hat{v}}{\hat{\omega}}\cos\theta - \frac{\hat{v}}{\hat{\omega}}\cos(\theta + \hat{\omega}\Delta t)$$</p>
+
+<p>$$\theta' = \theta + \hat{\omega}\Delta t + \hat{\gamma}\Delta t$$</p>
+
+<p><strong>Q: What does the Monte Carlo trajectory simulation show?</strong>
+- 100 simulated deliveries with same commands but different noise realizations.
+- Paths spread apart as robot moves further → uncertainty grows with distance.
+- 1σ ellipse (~68% endpoints), 2σ ellipse (~95%) show positional uncertainty.</p>
+
+<p><strong>Q: What is the effect of different floor conditions?</strong></p>
+
+<table>
+<thead>
+<tr>
+  <th>Surface</th>
+  <th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Rubber mat (kitchen)</td>
+  <td>Tight clustering — minimal uncertainty</td>
+</tr>
+<tr>
+  <td>Wooden floor (dining)</td>
+  <td>Moderate spread — generally on course</td>
+</tr>
+<tr>
+  <td>Wet/spill area</td>
+  <td>Large spread — could miss table entirely</td>
+</tr>
+</tbody>
+</table>
+
+<p>→ This justifies <strong>probabilistic planning</strong> in the restaurant.</p>
+
+<blockquote>
+  <p><strong>Why does this matter?</strong> A deterministic (non-probabilistic) robot would assume it arrived exactly at the table and try to place food there — even if it's 20 cm off. A probabilistic robot "knows" it might be off and can ask for confirmation, slow down, or request a sensor correction.</p>
+</blockquote>
+
+<hr />
+
+<h3 id="13-beam-based-sensor-model">1.3 Beam-Based Sensor Model</h3>
+
+<blockquote>
+  <p><strong>In simple words:</strong> The LiDAR fires a laser beam and gets back a distance reading. But that reading is not always perfect — sometimes something blocks the beam early, sometimes the beam gets no return at all, sometimes there's pure random garbage. Instead of ignoring these cases, we <em>model</em> all four possible outcomes mathematically so the robot can figure out what probably happened.</p>
+  
+  <p><strong>Analogy:</strong> Imagine asking "how far is the wall?" Your friend answers: sometimes correctly, sometimes says a shorter distance (because someone walked in front), sometimes says "I don't know" (no reflection), and occasionally gives a random number. The sensor model is just writing down probabilities for each of those four answer types.</p>
+</blockquote>
+
+<p><strong>Q: What are the 4 components of the beam sensor model?</strong></p>
+
+<table>
+<thead>
+<tr>
+  <th>Component</th>
+  <th>Explanation</th>
+  <th>Real-world scenario</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>p_hit (Gaussian)</td>
+  <td>Most readings are correct, clustered around true distance</td>
+  <td>Normal wall/table detection</td>
+</tr>
+<tr>
+  <td>p_short (Exponential)</td>
+  <td>Unexpected obstacle between robot and wall</td>
+  <td>Waiter stepping into beam</td>
+</tr>
+<tr>
+  <td>p_max (Uniform near max-range)</td>
+  <td>Sensor returns no reading</td>
+  <td>Long open aisle, mirror-like reflections</td>
+</tr>
+<tr>
+  <td>p_rand (Uniform)</td>
+  <td>Random noise or glitch</td>
+  <td>Reflective metal surfaces on floors</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Q: How are these combined?</strong>
+$$p(z|z^*) = \alpha_{hit} \cdot p_{hit} + \alpha_{short} \cdot p_{short} + \alpha_{max} \cdot p_{max} + \alpha_{rand} \cdot p_{rand}$$
+where the α weights sum to 1.</p>
+
+<p><strong>Q: What does a sensor reading of z &lt; z* tell you?</strong>
+- An unexpected obstacle is closer than the true wall — p_short component captures this (exponential decay; closer = more likely).</p>
+
+<hr />
+
+<h3 id="14-workplace-evaluation-question-3">1.4 Workplace Evaluation (Question 3)</h3>
+
+<blockquote>
+  <p><strong>In simple words:</strong> This section connects the robotics theory to the real world. The key message is: <em>uncertainty is everywhere in real factories and restaurants</em> — sensors are imperfect, surfaces vary, people move unexpectedly. Probabilistic models are the engineering answer to handling that uncertainty gracefully instead of crashing or failing.</p>
+</blockquote>
+
+<p><strong>Q: Why is probabilistic modeling valuable in your workplace?</strong>
+- ABB Robotics factory floors: payload variations and joint wear create motion uncertainty.
+- Probabilistic motion model prevents overconfidence in position estimates.
+- Beam sensor model handles dynamic obstacles (forklifts, workers) naturally via p_short.</p>
+
+<p><strong>Q: What is the practical impact on the restaurant robot?</strong>
+- ~20–30 deliveries per service shift handled autonomously.
+- ~40% reduction in routine wait-staff workload for food delivery runs.
+- Reduces manual intervention through uncertainty-aware planning.</p>
+
+<hr />
+
+<hr />
+
+<h2 id="part-2-assignment-2">PART 2 — ASSIGNMENT 2</h2>
+
+<blockquote>
+  <p><strong>Big picture (Assignment 2 in one sentence):</strong>
+  Now that we can model motion and sensing, we build the <strong>full brain</strong> of the robot — it localizes itself, builds a map of unknown space, plans a path, learns to explore smarter, and finally experiments with replacing the classical planner with a deep-learning model.</p>
+</blockquote>
+
+<hr />
+
+<h3 id="21-overall-navigation-pipeline">2.1 Overall Navigation Pipeline</h3>
+
+<blockquote>
+  <p><strong>In simple words:</strong> A full navigation system is like a chain of specialists working together:
+  1. <em>Where am I?</em> → MCL answers this
+  2. <em>What does the room look like?</em> → SLAM answers this
+  3. <em>How do I get there?</em> → D* Lite answers this
+  4. <em>Where should I look next?</em> → RL answers this
+  5. <em>Can I do planning without hand-coded rules?</em> → CNN answers this</p>
+</blockquote>
+
+<hr />
+
+<h4 id="pipeline-step-by-step">Pipeline — Step by Step</h4>
+
+<p><strong>STEP 0 — Setup (Shared Environment)</strong>
+- Build one consistent restaurant map: 10m × 8m grid with walls, kitchen counter, 4 dining tables
+- Define resolution (<code>RES</code>), grid dimensions (<code>W</code>, <code>H</code>), start and goal positions
+- Every later module uses this same map — ensures fair comparison across parts
+- Key variables created here: <code>grid</code>, <code>start_xy</code>, <code>goal_xy</code>, <code>start_rc</code>, <code>goal_rc</code>
+- <strong>Why this step exists:</strong> Without a shared world, each module would operate in a different environment and results couldn't be compared</p>
+
+<hr />
+
+<p><strong>STEP 1 — Part A: Monte Carlo Localization (MCL)</strong></p>
+
+<blockquote>
+  <h4 id="we-already-have-a-shared-map-from-step-0-so-why-do-we-need-mcl-why-doesnt-the-robot-just-know-where-it-is">❓ "We already have a shared map from Step 0 — so why do we need MCL? Why doesn't the robot just know where it is?"</h4>
+  
+  <p><strong>This is the single most important thing to understand about Step 1.</strong></p>
+  
+  <p>Having a map and knowing your position on it are two completely different things.</p>
+  
+  <p><strong>Analogy:</strong> You are handed a Google Maps screenshot of your city. Then you are blindfolded, driven around, and dropped somewhere. You still have the map — but you have no idea which street you are currently standing on. The map tells you what the world looks like. It does NOT tell you where YOU are in it right now.</p>
+  
+  <p><strong>In the robot's case:</strong>
+  - The shared <code>grid</code> from Step 0 says: <em>"there is a wall here, a table there"</em> — it describes the environment
+  - But the robot's current position <code>(x, y, θ)</code> is a dynamic variable — it changes every single timestep as the robot moves
+  - After just a few delivery moves, the robot's wheels have slipped, its motors weren't perfect, and it no longer knows exactly where it ended up
+  - MCL continuously answers the question: <em>"given what my LiDAR is seeing RIGHT NOW, where on this map am I most likely standing?"</em></p>
+  
+  <p><strong>Why can't the robot just count its wheel turns (odometry)?</strong>
+  - We showed in Assignment 1 that wheel slip on wet floors causes α parameters to be high
+  - Small errors at each step accumulate — after 30 seconds of delivery, the robot could be 50 cm off from where it thinks it is
+  - That 50 cm error means it tries to place food in the wrong spot, or drives into a chair
+  - MCL corrects this drift at every timestep using the LiDAR as an external reference</p>
+  
+  <p><strong>One-line answer for viva:</strong>
+  <em>"The map tells the robot what the world looks like. MCL tells the robot where it currently IS in that world. Both are needed — one without the other is useless."</em></p>
+</blockquote>
+
+<blockquote>
+  <h4 id="cant-we-find-the-pose-once-at-the-start-and-just-track-it-from-there">❓ "Can't we find the pose once at the start and just track it from there?"</h4>
+  
+  <p><strong>No — and this is crucial. Pose must be found continuously, at every single timestep.</strong></p>
+  
+  <p>Here is why it can never be "done once":</p>
+  
+  <table>
+  <thead>
+  <tr>
+    <th>Reason</th>
+    <th>What happens without continuous pose update</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td><strong>Wheel slip</strong></td>
+    <td>Every step introduces a small position error — errors add up silently</td>
+  </tr>
+  <tr>
+    <td><strong>Motor imprecision</strong></td>
+    <td>The robot commands "move 0.5m" but actually moves 0.48m</td>
+  </tr>
+  <tr>
+    <td><strong>Turning drift</strong></td>
+    <td>Small heading errors after each turn compound into large positional errors</td>
+  </tr>
+  <tr>
+    <td><strong>Dynamic obstacles</strong></td>
+    <td>A guest bumps the robot — its physical position jumps but odometry doesn't know</td>
+  </tr>
+  <tr>
+    <td><strong>Accumulated drift</strong></td>
+    <td>After 10 delivery steps, the robot thinks it is at (4.0, 3.0) but is actually at (4.6, 2.7)</td>
+  </tr>
+  </tbody>
+  </table>
+  
+  <p><strong>The continuous MCL loop — runs non-stop during every delivery:</strong></p>
+
+<pre><code>[Robot moves one step]
+      ↓
+Move all particles forward with noisy motion model
+      ↓
+Fire LiDAR → compare each particle's expected scan to actual scan
+      ↓
+Weight particles → resample
+      ↓
+New best pose estimate for THIS timestep
+      ↓
+[Robot moves next step] → repeat forever
+</code></pre>
+  
+  <p><strong>Think of it like GPS on your phone:</strong> Your phone doesn't find your location once and stop. It continuously re-estimates your position because you keep moving and small errors keep building. MCL is exactly this — a continuous, self-correcting pose tracker.</p>
+  
+  <p><strong>If MCL stopped running mid-delivery:</strong>
+  - The robot would rely on odometry alone
+  - Over a 30-second delivery path (~20 steps), accumulated drift could be 30–50 cm
+  - The robot would miss the table, bump into chairs, or stop at the wrong location</p>
+  
+  <p><strong>Key viva sentence:</strong>
+  <em>"Pose estimation is not an initialisation step — it is a continuous real-time filter that runs for every timestep of the robot's operation. The robot's position is always uncertain and always being re-estimated."</em></p>
+</blockquote>
+
+<ul>
+<li><strong>Input:</strong> Known map (<code>grid</code>) + sequence of motion commands + simulated LiDAR readings</li>
+<li><strong>What it does:</strong>
+<ul>
+<li>Maintains 500 particles, each a possible pose <code>(x, y, θ)</code></li>
+<li>Every timestep: move particles with noisy motion model → score them against LiDAR → resample</li>
+<li>Over time particles converge to the true robot location</li>
+</ul></li>
+<li><strong>Output:</strong> Estimated robot path + position error curve</li>
+<li><strong>Dependency on previous step:</strong> Uses <code>grid</code> from Setup to score particles</li>
+<li><strong>Why before SLAM:</strong> Demonstrates the <em>localization</em> problem in isolation first — assumes map is known, focuses only on pose estimation</li>
+<li><strong>What it does NOT do:</strong> Build any map; only estimates pose on an existing one</li>
+</ul>
+
+<h4 id="why-mcl-and-not-the-alternatives">Why MCL and not the alternatives?</h4>
+
+<table>
+<thead>
+<tr>
+  <th>Alternative</th>
+  <th>Why NOT chosen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>Pure Odometry / Dead-reckoning</strong></td>
+  <td>No sensor correction — errors accumulate unboundedly; robot drifts far from true pose over a full delivery</td>
+</tr>
+<tr>
+  <td><strong>EKF Localization (Extended Kalman Filter)</strong></td>
+  <td>Assumes the pose uncertainty is a single Gaussian (unimodal) — fails when robot is kidnapped or starts in an unknown position; cannot represent multi-modal distributions</td>
+</tr>
+<tr>
+  <td><strong>Histogram / Grid Filter</strong></td>
+  <td>Discretizes the whole state space into cells — very high memory cost for a continuous 3D pose space <code>(x, y, θ)</code>; computationally expensive</td>
+</tr>
+<tr>
+  <td><strong>MCL (chosen)</strong></td>
+  <td>Handles multi-modal uncertainty (multiple hypotheses); scales well; easy to add/remove particles dynamically; naturally handles the restaurant's crowded, noisy environment</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<p><strong>STEP 2 — Part B: Grid SLAM (Occupancy Mapping)</strong>
+- <strong>Input:</strong> Robot motion (lawnmower waypoints) + LiDAR beam readings at each waypoint
+- <strong>What it does:</strong>
+  - Robot follows a pre-planned lawnmower path across the full floor
+  - At each waypoint: fire LiDAR beams, update log-odds for free cells (along beam) and occupied cells (at endpoint)
+  - After full coverage: convert log-odds → probabilities → threshold to binary map
+- <strong>Output:</strong> <code>learned_grid</code> — the robot's own reconstructed occupancy map
+- <strong>Dependency on previous step:</strong> Uses same restaurant layout as ground truth for IoU comparison
+- <strong>Why after MCL:</strong> Demonstrates the <em>mapping</em> problem in isolation — assumes pose is approximately known (from waypoints), focuses on building the map
+- <strong>What it does NOT do:</strong> Localize the robot; only builds the map</p>
+
+<h4 id="why-grid-slam-occupancy-mapping-and-not-the-alternatives">Why Grid SLAM (occupancy mapping) and not the alternatives?</h4>
+
+<table>
+<thead>
+<tr>
+  <th>Alternative</th>
+  <th>Why NOT chosen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>Feature-based SLAM (landmarks)</strong></td>
+  <td>Requires stable, distinguishable landmarks — a restaurant has few reliable features; tables and chairs move, guests obstruct views</td>
+</tr>
+<tr>
+  <td><strong>Graph SLAM / Pose Graph SLAM</strong></td>
+  <td>More powerful but significantly more complex — needs loop closure detection and global graph optimization; overkill for a single-floor bounded environment</td>
+</tr>
+<tr>
+  <td><strong>ORB-SLAM / Visual SLAM</strong></td>
+  <td>Needs a camera and rich visual texture; our robot uses 2D LiDAR as primary sensor, not RGB image streams</td>
+</tr>
+<tr>
+  <td><strong>3D Voxel Mapping</strong></td>
+  <td>Unnecessary for a flat restaurant floor; 2D occupancy grid captures all relevant obstacles with far lower memory and compute cost</td>
+</tr>
+<tr>
+  <td><strong>Grid SLAM with log-odds (chosen)</strong></td>
+  <td>Simple, interpretable, works directly with 2D LiDAR; log-odds updates are additive and numerically stable; output directly usable by D* planner</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<p><strong>STEP 3 — Part C: D* Lite Path Planning</strong>
+- <strong>Input:</strong> <code>learned_grid</code> (from SLAM) + <code>start_rc</code> + <code>goal_rc</code>
+- <strong>What it does:</strong>
+  - Computes shortest path from kitchen to target table on the SLAM-built map
+  - Simulates a new dynamic obstacle appearing mid-path
+  - Incrementally replans — only updates affected graph vertices, not the whole path
+- <strong>Output:</strong> Initial path + replanned path after obstacle insertion
+- <strong>Dependency on previous step:</strong> Directly uses <code>learned_grid</code> produced by SLAM — not the ground truth map
+- <strong>Why after SLAM:</strong> You cannot plan a path until you have a map; SLAM provides that map
+- <strong>What it does NOT do:</strong> Re-explore the space or re-localize; just plans on the existing map</p>
+
+<h4 id="why-d-lite-and-not-the-alternatives">Why D* Lite and not the alternatives?</h4>
+
+<table>
+<thead>
+<tr>
+  <th>Alternative</th>
+  <th>Why NOT chosen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>Dijkstra's Algorithm</strong></td>
+  <td>Explores all nodes uniformly with no goal-direction bias — correct but very slow in large grids; no replanning capability</td>
+</tr>
+<tr>
+  <td><strong>A*</strong></td>
+  <td>Efficient for static maps but replans the <em>entire</em> path from scratch after every obstacle change — unacceptable latency in a dynamic restaurant</td>
+</tr>
+<tr>
+  <td><strong>RRT / RRT*</strong></td>
+  <td>Sampling-based — better for continuous high-dimensional spaces; but on a discrete occupancy grid it is slower and less predictable than graph search</td>
+</tr>
+<tr>
+  <td><strong>Potential Fields</strong></td>
+  <td>Simple reactive method; gets stuck in local minima (e.g., dead-end between two tables); no guarantee of reaching the goal</td>
+</tr>
+<tr>
+  <td><strong>D* Lite (chosen)</strong></td>
+  <td>Designed for dynamic environments — repairs only the affected portion of the plan; constant-time replanning for small obstacle changes; optimal on discrete grids</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<p><strong>STEP 4 — Part D: RL for Frontier Exploration</strong>
+- <strong>Input:</strong> Partially known map state + list of frontier cells + Q-learning parameters
+- <strong>What it does:</strong>
+  - During the mapping process, identifies all frontier cells (free cells touching unknown space)
+  - Uses ε-greedy policy to pick which frontier to explore next
+  - Simulates scanning from the chosen frontier; counts newly revealed cells as reward
+  - Updates Q-value: <code>Q ← Q + α(reward − Q)</code>
+  - Over episodes: learns which frontier types reveal the most new space
+- <strong>Output:</strong> Learned Q-table + information-gain curve per episode
+- <strong>Dependency on previous step:</strong> Uses the same map/grid conventions and ray model established in SLAM
+- <strong>Why this module exists:</strong> Naïve SLAM visits waypoints in a fixed order regardless of what's been learned — RL makes the exploration <em>adaptive</em> and more efficient
+- <strong>What it does NOT do:</strong> Change the mapping update rule; only changes which frontier is chosen next</p>
+
+<h4 id="why-rl-q-learning-for-frontier-selection-and-not-the-alternatives">Why RL (Q-learning) for frontier selection and not the alternatives?</h4>
+
+<table>
+<thead>
+<tr>
+  <th>Alternative</th>
+  <th>Why NOT chosen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>Greedy Nearest Frontier</strong></td>
+  <td>Always picks the physically closest frontier — efficient in travel time but often reveals little new space (close frontiers are usually small gaps)</td>
+</tr>
+<tr>
+  <td><strong>Random Frontier Selection</strong></td>
+  <td>No learning — performs consistently poorly and doesn't improve over episodes</td>
+</tr>
+<tr>
+  <td><strong>Full Deep RL (DQN / PPO) for exploration</strong></td>
+  <td>Overkill for this decision — the frontier selection problem has a small, discrete action space; a simple Q-table is sufficient and far easier to interpret</td>
+</tr>
+<tr>
+  <td><strong>Boustrophedon (lawnmower) decomposition</strong></td>
+  <td>Fixed pattern with no adaptation — cannot adjust to what has already been revealed or prioritize high-information areas</td>
+</tr>
+<tr>
+  <td><strong>Q-learning ε-greedy (chosen)</strong></td>
+  <td>Lightweight, interpretable, improves over episodes; RL only affects the <em>decision layer</em> while the classical log-odds mapping stays stable and reliable</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<p><strong>STEP 5 — Part E: CNN Planner (Imitation of D*)</strong>
+- <strong>Input:</strong> <code>learned_grid</code> + D*-generated expert action labels
+- <strong>What it does:</strong>
+  - Generates thousands of random obstacle maps
+  - For each map: runs D* and records its first move (up/down/left/right)
+  - Builds a 2-channel local observation patch: [occupancy window around robot, goal direction channel]
+  - Trains a CNN with cross-entropy loss to predict D*'s action
+  - Rolls out the trained CNN on the actual restaurant <code>learned_grid</code>
+- <strong>Output:</strong> Trained CNN model + rollout path compared against D* path
+- <strong>Dependency on previous step:</strong> Uses <code>learned_grid</code> from SLAM; 4-class output matches D*'s 4-connected movement
+- <strong>Why this module exists:</strong> Explores whether a learned policy can <em>replace</em> a classical planner — faster inference, no graph search at runtime
+- <strong>What it does NOT do:</strong> Replace D* completely; D* is still the gold standard fallback</p>
+
+<h4 id="why-cnn-imitation-learning-and-not-the-alternatives">Why CNN (imitation learning) and not the alternatives?</h4>
+
+<table>
+<thead>
+<tr>
+  <th>Alternative</th>
+  <th>Why NOT chosen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>DQN (Deep Q-Network)</strong></td>
+  <td>Learns from trial-and-error in the environment — requires many expensive environment interactions and careful reward shaping; much slower to train than imitation</td>
+</tr>
+<tr>
+  <td><strong>PPO / Actor-Critic RL</strong></td>
+  <td>End-to-end RL training is complex; no guarantee it matches D* quality; requires thousands of episodes vs supervised imitation on pre-collected labels</td>
+</tr>
+<tr>
+  <td><strong>RNN / LSTM planner</strong></td>
+  <td>Useful for partially observable long-horizon planning; but the local patch observation already captures the necessary context without needing recurrent memory</td>
+</tr>
+<tr>
+  <td><strong>Just use D* always</strong></td>
+  <td>D* requires a graph search at every step — CNN inference is O(1) and faster at runtime; learning-based planner also generalizes to unseen map layouts D* hasn't been tuned for</td>
+</tr>
+<tr>
+  <td><strong>CNN imitation (chosen)</strong></td>
+  <td>Trains on D* expert decisions → fast convergence; no environment interaction needed; directly inherits D*'s optimality on training maps; simple cross-entropy loss</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<p><strong>How the steps connect — data flow summary:</strong></p>
+
+<pre><code>STEP 0 (Setup)
+  │
+  ├──► grid ──────────────────────────────► STEP 1 (MCL): score particles against map
+  │
+  ├──► grid (ground truth) ───────────────► STEP 2 (SLAM): compare learned map via IoU
+  │
+  │         learned_grid (SLAM output)
+  │               │
+  │               ├──────────────────────► STEP 3 (D* Lite): plan path on learned map
+  │               │
+  │               ├──────────────────────► STEP 4 (RL): same map conventions for frontier scan
+  │               │
+  │               └──────────────────────► STEP 5 (CNN): rollout on learned map; compare to D*
+  │
+  └──► start_rc, goal_rc ─────────────────► STEPS 3, 4, 5: shared start and goal positions
+</code></pre>
+
+<hr />
+
+<p><strong>Key shared variables:</strong> <code>grid</code>, <code>learned_grid</code>, <code>RES</code>, <code>W</code>, <code>H</code>, <code>start_xy</code>, <code>goal_xy</code>, <code>start_rc</code>, <code>goal_rc</code></p>
+
+<hr />
+
+<h4 id="what-is-start_rc-and-goal_rc-how-are-they-different-from-start_xy-and-goal_xy">What is <code>start_rc</code> and <code>goal_rc</code>? How are they different from <code>start_xy</code> and <code>goal_xy</code>?</h4>
+
+<blockquote>
+  <p>There are <strong>two coordinate systems</strong> in the pipeline. Every position exists in both — the right one is used depending on whether the module works in continuous space or on a discrete grid.</p>
+</blockquote>
+
+<p><strong><code>start_xy</code> / <code>goal_xy</code> — Metric coordinates (real-world metres)</strong>
+- Format: <code>(x, y)</code> in metres
+- Example: <code>start_xy = (0.5, 0.5)</code> means 0.5 m from the bottom-left corner of the restaurant
+- Used by: <strong>MCL</strong> — which tracks the robot's continuous real-world position <code>(x, y, θ)</code>
+- Why: MCL propagates particles in continuous space using the velocity motion model</p>
+
+<p><strong><code>start_rc</code> / <code>goal_rc</code> — Grid coordinates (row, column cell index)</strong>
+- Format: <code>(row, col)</code> — integer index into the occupancy grid array
+- Example: <code>start_rc = (2, 2)</code> means cell at row 2, column 2 of the grid
+- Used by: <strong>D* Lite, RL, CNN</strong> — all of which operate on the discrete occupancy grid
+- Why: D* searches over grid cells (nodes), RL selects frontier cells by index, CNN predicts moves on a grid patch</p>
+
+<p><strong>How to convert between them:</strong></p>
+
+<pre><code>row = int(y / RES)       col = int(x / RES)       ← xy  →  rc
+x   = col * RES          y   = row * RES           ← rc  →  xy
+</code></pre>
+
+<p>where <code>RES</code> = resolution (metres per cell), e.g. <code>RES = 0.1</code> means each cell = 10 cm × 10 cm</p>
+
+<p><strong>Side-by-side example (RES = 0.1 m):</strong></p>
+
+<table>
+<thead>
+<tr>
+  <th>Variable</th>
+  <th>Value</th>
+  <th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>start_xy</code></td>
+  <td><code>(0.5, 0.5)</code></td>
+  <td>Kitchen position: 0.5 m along x, 0.5 m along y</td>
+</tr>
+<tr>
+  <td><code>start_rc</code></td>
+  <td><code>(5, 5)</code></td>
+  <td>Same position as cell row 5, column 5 in the grid</td>
+</tr>
+<tr>
+  <td><code>goal_xy</code></td>
+  <td><code>(7.5, 3.0)</code></td>
+  <td>Table 3 position: 7.5 m along x, 3.0 m along y</td>
+</tr>
+<tr>
+  <td><code>goal_rc</code></td>
+  <td><code>(30, 75)</code></td>
+  <td>Same position as cell row 30, column 75 in the grid</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Why have both?</strong>
+- The physical world is continuous — MCL needs metres to simulate robot motion and sensor beams
+- The planning world is discrete — D* needs integer cell indices to build and search a graph
+- Keeping both means each module uses the representation that suits it best
+- They always refer to the same physical point — just expressed differently</p>
+
+<blockquote>
+  <p><strong>One-line rule:</strong>
+  - <code>_xy</code> = real-world metres → used by continuous modules (MCL, motion model)
+  - <code>_rc</code> = grid cell index → used by discrete modules (D*, RL, CNN)</p>
+</blockquote>
+
+<hr />
+
+<h3 id="particles-vs-waypoints-what-are-they-and-where-are-they-used">Particles vs Waypoints — What Are They and Where Are They Used?</h3>
+
+<blockquote>
+  <p>A very common confusion. These two concepts appear in different parts but are often mixed up.</p>
+</blockquote>
+
+<h4 id="particles">PARTICLES</h4>
+
+<ul>
+<li><strong>What they are:</strong>
+<ul>
+<li>A particle = one hypothesis (one guess) about the robot's current pose <code>(x, y, θ)</code></li>
+<li>Hundreds of particles run in parallel at the same time</li>
+<li>Each particle is a complete pose estimate — not a position to move to</li>
+</ul></li>
+<li><strong>What they store:</strong> <code>(x, y, θ, weight)</code> — position, direction, and how likely that guess is</li>
+<li><strong>Where used:</strong> <strong>MCL only (Part A)</strong></li>
+<li><strong>Purpose:</strong> To answer <em>"where is the robot right now?"</em> on a known map</li>
+<li><strong>How they work:</strong>
+<ul>
+<li>Start: scattered randomly (or near last known pose) across the map</li>
+<li>Each step: moved forward using the noisy motion model</li>
+<li>After each LiDAR scan: scored (weighted) based on how well they match the map</li>
+<li>Low-weight particles are removed; high-weight particles are copied (resampling)</li>
+<li>Over time: cluster tightly around the true robot location</li>
+</ul></li>
+<li><strong>Analogy:</strong> 500 invisible clones of the robot, each trying a different "where I might be" — the ones that match sensor readings survive</li>
+</ul>
+
+<h4 id="waypoints">WAYPOINTS</h4>
+
+<ul>
+<li><strong>What they are:</strong>
+<ul>
+<li>A waypoint = a pre-defined target position <code>(x, y)</code> the robot should physically move to</li>
+<li>A sequence of waypoints forms a planned path</li>
+<li>The robot moves from one waypoint to the next, one at a time</li>
+</ul></li>
+<li><strong>What they store:</strong> <code>(x, y)</code> grid coordinates — just a destination</li>
+<li><strong>Where used:</strong> <strong>Grid SLAM only (Part B)</strong></li>
+<li><strong>Purpose:</strong> To systematically cover the entire restaurant floor so every area gets scanned</li>
+<li><strong>How they work:</strong>
+<ul>
+<li>A lawnmower pattern (row by row) is pre-computed across the map</li>
+<li>Robot visits each waypoint in order</li>
+<li>At each waypoint: fires LiDAR beams and updates the occupancy map</li>
+<li>No uncertainty involved — these are commanded destinations, not guesses</li>
+</ul></li>
+<li><strong>Analogy:</strong> A cleaning robot set to sweep every row of a room in order — it just follows the grid</li>
+</ul>
+
+<h4 id="side-by-side-comparison">Side-by-Side Comparison</h4>
+
+<table>
+<thead>
+<tr>
+  <th>Feature</th>
+  <th>Particles (MCL)</th>
+  <th>Waypoints (SLAM)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>What it represents</td>
+  <td>A guess about current robot pose</td>
+  <td>A target position to physically move to</td>
+</tr>
+<tr>
+  <td>How many at once</td>
+  <td>Hundreds simultaneously</td>
+  <td>One at a time (sequence)</td>
+</tr>
+<tr>
+  <td>Contains uncertainty?</td>
+  <td>Yes — each has a weight (likelihood)</td>
+  <td>No — deterministic destinations</td>
+</tr>
+<tr>
+  <td>Created by</td>
+  <td>Randomly sampled / propagated</td>
+  <td>Pre-computed lawnmower grid</td>
+</tr>
+<tr>
+  <td>Updated how?</td>
+  <td>Moved by motion model + weighted by sensor</td>
+  <td>Robot drives there; no update to waypoint itself</td>
+</tr>
+<tr>
+  <td>Purpose</td>
+  <td>Estimate WHERE the robot IS</td>
+  <td>Define WHERE the robot should GO</td>
+</tr>
+<tr>
+  <td>Used in</td>
+  <td>Part A — MCL</td>
+  <td>Part B — Grid SLAM</td>
+</tr>
+<tr>
+  <td>Dies / removed?</td>
+  <td>Yes — low-weight particles are deleted</td>
+  <td>No — all waypoints are visited in order</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+  <p><strong>One-line rule to remember:</strong>
+  - <strong>Particles</strong> = <em>"Where do I think I am?"</em> → MCL
+  - <strong>Waypoints</strong> = <em>"Where should I go next?"</em> → SLAM</p>
+</blockquote>
+
+<hr />
+
+<h3 id="22-part-a-monte-carlo-localization-mcl">2.2 Part A — Monte Carlo Localization (MCL)</h3>
+
+<blockquote>
+  <p><strong>In simple words:</strong> The robot has a map of the restaurant (like a floor plan), but it doesn't know exactly <em>where on the map it currently is</em>. MCL solves this by keeping hundreds of "guesses" (particles) about its location all at once, and gradually eliminating the wrong guesses using sensor readings — like a game of "hot or cold".</p>
+  
+  <p><strong>Analogy:</strong> Imagine you are blindfolded inside a building with a floor plan. You take a few steps and feel the floor, hear sounds, smell things. Each clue eliminates some locations on the map. After enough clues, you narrow down to roughly where you are. MCL does exactly this — mathematically and in milliseconds.</p>
+</blockquote>
+
+<p><strong>Q: What does MCL do?</strong>
+- Estimates robot pose on a <strong>known map</strong> using particles
+- Input: known map + control commands + LiDAR readings
+- Output: estimated path + position error curve over the full trajectory
+- <strong>Particles are used here</strong> — NOT waypoints</p>
+
+<p><strong>Q: What exactly is a particle in MCL?</strong>
+- Each particle = one possible robot pose <code>(x, y, θ)</code>
+- Weight = how well that particle's simulated LiDAR matches the actual LiDAR reading
+- More weight = more likely to be the true pose
+- Hundreds of particles run simultaneously</p>
+
+<p><strong>Q: Describe the MCL loop step by step.</strong>
+1. <strong>Initialise</strong> — scatter N particles across the map (random or near last known pose)
+2. <strong>Predict</strong> — move every particle forward using the noisy motion model; each particle takes a slightly different noisy path
+3. <strong>Weight</strong> — at the new pose, simulate a LiDAR scan for each particle; compare it to the actual scan; particles that match well get high weight
+4. <strong>Estimate</strong> — compute the weighted mean of all particles → this is the robot's best current pose estimate
+5. <strong>Resample</strong> — draw N new particles proportional to weight; good particles survive and multiply, bad ones die
+6. <strong>Repeat</strong> — for every new timestep</p>
+
+<p><strong>Q: What is the motion model in MCL?</strong>
+$$x' = x + v\cos\theta \cdot dt, \quad y' = y + v\sin\theta \cdot dt, \quad \theta' = \theta + \omega \cdot dt$$
+- Noise is added to <code>v</code> and <code>ω</code> before integration
+- Each particle gets a <em>different</em> noise sample → that's why they spread out</p>
+
+<p><strong>Q: How are particle weights computed?</strong>
+- Better scan match → larger exponential likelihood weight
+- $w_i \propto \exp(-\text{scan error}_i^2 / 2\sigma^2)$
+- Weight close to 0 → particle is in a wrong location
+- Weight close to 1 → particle matches the map well</p>
+
+<p><strong>Q: When do you know MCL is working?</strong>
+- Average position error is low and decreasing over time
+- Particles have converged to a tight cluster
+- Reliable enough to support delivery planning</p>
+
+<p><strong>Q: Why is MCL used instead of odometry alone?</strong>
+- Odometry drifts over time (small errors add up)
+- MCL corrects drift by matching LiDAR scans to the map at every step
+- It is a <strong>sensor-corrected filter</strong>, not just dead-reckoning</p>
+
+<blockquote>
+  <p><strong>Beginner tip — understand resampling:</strong>
+  - After weighting, "copy the good guesses, delete the bad ones"
+  - Add a tiny bit of random jitter when copying so particles don't all collapse to one identical point
+  - Over many steps, particles cluster tightly around the true pose</p>
+</blockquote>
+
+<hr />
+
+<h3 id="23-part-b-grid-slam-occupancy-mapping">2.3 Part B — Grid SLAM (Occupancy Mapping)</h3>
+
+<blockquote>
+  <p><strong>In simple words:</strong> The robot doesn't have a floor plan this time — it needs to <em>build one from scratch</em> while moving around. Every time the LiDAR fires, it learns something: "that beam went 2m before hitting something" means the 2m of space is free and the endpoint is a wall. Repeat thousands of times and you get a complete map.</p>
+  
+  <p><strong>Analogy:</strong> Imagine painting a room with a torch in the dark. Every time you point the torch, you can see what's in that direction and paint it on a blank map. Eventually you've swept the whole room and have a complete picture.</p>
+</blockquote>
+
+<p><strong>Q: What does Grid SLAM build?</strong>
+- Reconstructs a map from repeated beam scans
+- Uses <strong>log-odds occupancy</strong> per grid cell
+- Input: robot movement commands + LiDAR readings
+- Output: a binary occupancy map of the restaurant
+- <strong>Waypoints are used here</strong> — NOT particles</p>
+
+<p><strong>Q: What exactly is a waypoint in SLAM?</strong>
+- A waypoint = a pre-defined <code>(x, y)</code> position the robot must physically drive to
+- Arranged in a <strong>lawnmower (row-by-row) pattern</strong> to cover the full floor
+- Purpose: guarantee every area of the map gets scanned at least once
+- The robot visits them sequentially — no uncertainty, just commanded destinations</p>
+
+<p><strong>Q: What is the full flow step by step?</strong>
+1. <strong>Pre-compute waypoints</strong> — generate a grid of positions covering the 10m × 8m floor
+2. <strong>Drive to each waypoint</strong> — robot moves to the next position using its motion model
+3. <strong>Fire LiDAR beams</strong> — cast rays in all directions from the current position
+4. <strong>Update free cells</strong> — for every cell along the beam path before the endpoint → decrease log-odds (more likely free)
+5. <strong>Update occupied cell</strong> — for the cell at the beam endpoint → increase log-odds (more likely wall/obstacle)
+6. <strong>Repeat</strong> — for every waypoint until full coverage
+7. <strong>Convert and threshold</strong> — log-odds → probability → binary (free / occupied)</p>
+
+<p><strong>Q: Why log-odds instead of direct probabilities?</strong>
+- Log-odds allows <strong>simple additive updates</strong> from repeated sensor evidence:
+  $$l<em>t(x) = l</em>{t-1}(x) + \log\frac{p(\text{occ}|\text{obs})}{1 - p(\text{occ}|\text{obs})}$$
+- No multiplication needed — each scan just adds or subtracts a constant
+- Numerically stable; no risk of probabilities becoming exactly 0 or 1</p>
+
+<hr />
+
+<h4 id="how-occupancy-grid-and-log-odds-are-linked">How Occupancy Grid and Log-Odds Are Linked</h4>
+
+<blockquote>
+  <p><strong>The occupancy grid IS the log-odds grid — they are the same structure, just at different stages of the pipeline.</strong></p>
+</blockquote>
+
+<p><strong>Step 1 — What the grid stores internally:</strong>
+- Every cell <code>(r, c)</code> stores a single float number called the <strong>log-odds value</strong> <code>l(r,c)</code>
+- Starts at 0 (completely unknown — 50/50 probability)
+- Goes positive → cell more likely occupied (wall/table leg)
+- Goes negative → cell more likely free (open space)
+- There is no separate "occupancy grid" and "log-odds grid" — it is <strong>one grid, one number per cell</strong></p>
+
+<p><strong>Step 2 — How log-odds connects to probability:</strong></p>
+
+<p>$$l = \log\frac{p}{1-p} \quad \Longleftrightarrow \quad p = \frac{1}{1 + e^{-l}}$$</p>
+
+<table>
+<thead>
+<tr>
+  <th>Log-odds <code>l</code></th>
+  <th>Probability <code>p</code></th>
+  <th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>0</td>
+  <td>0.50</td>
+  <td>Unknown — no evidence either way</td>
+</tr>
+<tr>
+  <td>+2</td>
+  <td>0.88</td>
+  <td>Likely occupied</td>
+</tr>
+<tr>
+  <td>+5</td>
+  <td>0.99</td>
+  <td>Very likely occupied (wall confirmed)</td>
+</tr>
+<tr>
+  <td>−2</td>
+  <td>0.12</td>
+  <td>Likely free</td>
+</tr>
+<tr>
+  <td>−5</td>
+  <td>0.01</td>
+  <td>Very likely free (open corridor)</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Step 3 — What happens each time a LiDAR beam fires:</strong>
+- Every beam produces two updates on the same grid:
+  - <strong>Free update</strong> (subtract a constant, e.g. −0.4) applied to every cell the beam <em>passed through</em>
+  - <strong>Occupied update</strong> (add a constant, e.g. +0.85) applied to the cell where the beam <em>hit</em>
+- These are just additions/subtractions directly on the stored log-odds number</p>
+
+<p><strong>Step 4 — How you get the final binary map:</strong>
+- After all waypoints are visited, convert every cell's log-odds → probability using the formula above
+- Apply a threshold (e.g. <code>p &gt; 0.5</code> → occupied, <code>p ≤ 0.5</code> → free)
+- This produces the <code>learned_grid</code> — a clean 0/1 binary occupancy map used by D* and CNN</p>
+
+<p><strong>Full lifecycle of one grid cell:</strong></p>
+
+<pre><code>Start:      l = 0.0      (unknown)
+After beam passes through × 3:   l = 0 − 0.4 − 0.4 − 0.4 = −1.2   → p = 0.23 (probably free)
+After beam hits × 2:             l = −1.2 + 0.85 + 0.85 = +0.5      → p = 0.62 (probably occupied)
+After beam hits × 5 more:        l = +0.5 + 4.25 = +4.75             → p = 0.99 (wall confirmed)
+Threshold:  cell = OCCUPIED ✓
+</code></pre>
+
+<blockquote>
+  <p><strong>One-line rule to remember:</strong>
+  - <strong>Occupancy grid</strong> = the map structure (2D array of cells)
+  - <strong>Log-odds</strong> = the value stored inside each cell
+  - They are not two different things — log-odds IS how the occupancy grid encodes uncertainty</p>
+</blockquote>
+
+<hr />
+
+<blockquote>
+  <p><strong>Beginner tip — why not just store 0/1 (free/occupied)?</strong>
+  - Sensors are noisy — one bad reading shouldn't flip a cell permanently
+  - Log-odds requires <em>many</em> consistent hits before a cell is confidently labelled
+  - This makes the map robust to occasional wrong LiDAR readings</p>
+</blockquote>
+
+<p><strong>Q: How do you measure map quality?</strong>
+- <strong>IoU (Intersection over Union)</strong> = (cells correct in both maps) ÷ (cells present in either map)
+- Range: 0 (no match) to 1 (perfect match)
+- Higher IoU = robot built a map closer to the true ground-truth layout</p>
+
+<p><strong>Q: What is the difference between free and occupied evidence?</strong></p>
+
+<table>
+<thead>
+<tr>
+  <th>Situation</th>
+  <th>Update</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Cell along beam path (before hit)</td>
+  <td>Free evidence → decrease log-odds</td>
+</tr>
+<tr>
+  <td>Cell at beam endpoint</td>
+  <td>Occupied evidence → increase log-odds</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<h3 id="24-part-c-d-lite-path-planning">2.4 Part C — D* Lite Path Planning</h3>
+
+<blockquote>
+  <p><strong>In simple words:</strong> Once the robot has a map, it needs to find the best route from start to goal. D* Lite is like a smart GPS that can quickly re-route if a road suddenly gets blocked — without recalculating the entire journey from scratch.</p>
+  
+  <p><strong>Analogy:</strong> Imagine driving from home to work using GPS. Halfway there, roadworks block a street. A basic planner (A*) recalculates the whole journey. D* Lite only fixes the blocked section — much faster.</p>
+</blockquote>
+
+<p><em><em>Q: What is D</em> Lite and why is it used instead of A</em>?**
+- D* Lite is an <strong>incremental/replanning algorithm</strong> — it repairs paths quickly when the map changes.
+- A* would replan the entire path from scratch after each obstacle update; D* only recomputes <strong>affected vertices</strong>.</p>
+
+<p><strong>Q: What is the core D* update rule?</strong>
+$$\text{rhs}(s) = \min_{\text{neighbors}} [g(\text{neighbor}) + \text{move_cost}]$$
+- g(s): current cost-to-goal estimate.
+- rhs(s): one-step lookahead consistency check.
+- A node is <strong>consistent</strong> when g(s) = rhs(s); <strong>inconsistent</strong> nodes are replanned.</p>
+
+<blockquote>
+  <p><strong>Beginner tip:</strong> Think of <code>g(s)</code> as the "official travel time" from a node to the goal, and <code>rhs(s)</code> as a "fresh check" based on neighbours. When an obstacle appears, some nodes get a new <code>rhs</code> (detour needed). D* only propagates this update through the affected nodes — the rest of the map stays unchanged.</p>
+</blockquote>
+
+<p><strong>Q: What is the flow?</strong>
+1. Compute initial path from start to goal.
+2. Insert a new obstacle block (simulated dynamic change).
+3. Update only the affected vertices.
+4. Recompute incrementally → fast replanning.</p>
+
+<p><strong>Q: What connectivity is used here?</strong>
+- 4-connected movement (up, down, left, right) — simpler and consistent with CNN planner.</p>
+
+<p><strong>Q: What is the input and output?</strong>
+- Input: <code>learned_grid</code>, <code>start_rc</code>, <code>goal_rc</code>
+- Output: initial path + replanned path after obstacle.</p>
+
+<hr />
+
+<h3 id="25-part-d-rl-for-frontier-exploration">2.5 Part D — RL for Frontier Exploration</h3>
+
+<blockquote>
+  <p><strong>In simple words:</strong> When building the map, the robot can see several unexplored doorways (frontiers). Which one should it go to first? Going to the wrong one wastes time. RL learns — through trial and experience — which type of frontier tends to reveal the most new space.</p>
+  
+  <p><strong>Analogy:</strong> You're exploring a maze with multiple unexplored branches. You can only go to one at a time. After trying many branches across many attempts, you start to learn that "wide-looking openings" tend to lead to bigger rooms. RL is learning exactly that kind of intuition automatically.</p>
+</blockquote>
+
+<p><strong>Q: What is the problem RL is solving here?</strong>
+- During mapping, there are many <strong>frontier cells</strong> (boundary between known and unknown space).
+- RL decides <strong>which frontier to explore next</strong> to reveal the most new map area efficiently.</p>
+
+<p><strong>Q: What is the RL update rule used?</strong>
+$$Q \leftarrow Q + \alpha \cdot (\text{reward} - Q)$$
+- Simplified 1-step TD update (no discount factor).
+- Reward = increase in number of known cells after exploring the chosen frontier.</p>
+
+<blockquote>
+  <p><strong>Beginner tip — reading the formula:</strong> <code>Q</code> is the current belief of how good a frontier is. <code>reward</code> is what actually happened. The formula nudges <code>Q</code> towards the reward by a fraction <code>α</code> (learning rate). Small α = learns slowly but stably. Large α = learns fast but can be erratic.</p>
+</blockquote>
+
+<p><strong>Q: What is the exploration strategy?</strong>
+- <strong>ε-greedy policy</strong>: with probability ε explore randomly, otherwise pick the frontier with highest Q value.</p>
+
+<p><strong>Q: Why use RL only for frontier selection and not for planning?</strong>
+- Classical mapping remains stable and reliable; RL only improves the <strong>decision layer</strong>.
+- Low-risk integration: if RL makes a poor frontier choice, the map still builds correctly.</p>
+
+<p><strong>Q: What is a frontier cell?</strong>
+- A free cell adjacent to at least one unknown cell — the boundary of the currently known map.</p>
+
+<hr />
+
+<h3 id="26-part-e-cnn-planner-imitation-of-d">2.6 Part E — CNN Planner (Imitation of D*)</h3>
+
+<blockquote>
+  <p><strong>In simple words:</strong> D* Lite always works, but it requires running a full graph search every time. What if we could train a neural network to "just know" the right direction to move, just by looking at the local map around it? That's exactly what the CNN planner does — it watches D* make thousands of decisions and learns to copy them.</p>
+  
+  <p><strong>Analogy:</strong> Imagine training a new employee by showing them thousands of past decisions made by an expert. Eventually they can make the same decision instantly from experience, without going through all the expert's reasoning steps. The CNN is that trained employee.</p>
+</blockquote>
+
+<p><strong>Q: What does the CNN planner do?</strong>
+- Replaces D*'s hand-coded next-action decisions with a <strong>learned action predictor</strong>.
+- Trained by imitating D* (imitation/supervised learning).</p>
+
+<p><strong>Q: What is the training process?</strong>
+1. Generate random obstacle maps.
+2. Query D* for the <strong>expert first move</strong> on each map.
+3. Build a two-channel local observation: occupancy patch + goal direction.
+4. Train CNN with <strong>cross-entropy loss</strong> on action labels.
+5. Roll out greedy CNN policy on the restaurant <code>learned_grid</code>.</p>
+
+<p><strong>Q: Why 4-class output?</strong>
+- Matches the 4-connected D* planner: up / down / left / right.</p>
+
+<p><strong>Q: Why train a CNN if D* already works?</strong>
+- CNN inference is very fast at runtime (no graph search).
+- D* remains the reliable fallback when CNN fails.
+- Deep planners generalize better to unseen map layouts.</p>
+
+<p><strong>Q: What is the loss function?</strong>
+$$\mathcal{L} = -\sum<em>i y</em>i \log(\hat{y}_i)$$
+Cross-entropy between predicted action logits and D*'s action labels.</p>
+
+<hr />
+
+<h3 id="27-part-a-research-paper-deep-rl-with-enhanced-ppo">2.7 Part A (Research Paper) — Deep RL with Enhanced PPO</h3>
+
+<blockquote>
+  <p><strong>In simple words:</strong> The previous parts (MCL, SLAM, D*) are a classical robotics pipeline — each module is hand-designed. This paper asks: <em>what if we threw all of that away and just trained one neural network end-to-end?</em> The robot sees its LiDAR readings + goal direction and outputs motor commands directly — no map, no planner, no localization module.</p>
+  
+  <p><strong>Why is this exciting?</strong> Because it means you don't need to design and tune five separate systems. One trained policy does it all.</p>
+  
+  <p><strong>Why is this risky?</strong> Because it's a black box — hard to explain why it fails, hard to certify for safety, and it only works in environments similar to where it was trained.</p>
+</blockquote>
+
+<p><strong>Q: What is the paper about?</strong>
+- Trains a wheeled mobile robot for <strong>mapless, collision-free navigation</strong> using PPO enhanced with Residual Blocks in actor and critic networks.
+- Platform: TurtleBot3 in 10×10 m Gazebo worlds.</p>
+
+<p><strong>Q: What is the observation space?</strong>
+- 16-dimensional:
+  - 10 features from 30-beam LiDAR (batched, minimum of each 3-beam group)
+  - Previous linear and angular velocity (2)
+  - Goal in polar coordinates (2)
+  - Yaw and heading orientation (2)</p>
+
+<p><strong>Q: What is the action space?</strong>
+- 2D continuous:
+  - Linear velocity bounded via <strong>sigmoid</strong> → [0, v<em>max]
+  - Angular velocity bounded via <strong>tanh</strong> → [-ω</em>max, +ω_max]</p>
+
+<p><strong>Q: What is the PPO clipped objective?</strong>
+$$L^{clip}(\theta) = \mathbb{E}\left[\min\left(r<em>t(\theta)A</em>t,\ \text{clip}(r<em>t(\theta), 1-\varepsilon, 1+\varepsilon)A</em>t\right)\right]$$
+where $r<em>t(\theta) = \frac{\pi</em>\theta(a<em>t|s</em>t)}{\pi_{\theta_{old}}(a<em>t|s</em>t)}$</p>
+
+<blockquote>
+  <p><strong>Beginner tip — PPO in plain English:</strong> Standard RL can make huge destructive updates to the policy. PPO adds a "clipping" guard: if the new policy wants to deviate more than ε from the old one, the update is capped. This keeps training stable — like a speed limiter on a car. <code>r_t</code> is the ratio of how much the new policy prefers an action vs the old policy. If this ratio gets too extreme, PPO ignores the excess.</p>
+</blockquote>
+
+<p><strong>Q: Why Residual Blocks in the network?</strong>
+- Residual connections improve gradient flow during training.
+- Help preserve informative gradients in deep networks → better optimization stability → improved path quality in cluttered environments.</p>
+
+<p><strong>Q: How does mapless navigation differ from classical planning?</strong></p>
+
+<table>
+<thead>
+<tr>
+  <th>Dimension</th>
+  <th>Classical (MCL + SLAM + D*)</th>
+  <th>ResBlock-PPO</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Map dependency</td>
+  <td>Requires map or builds one</td>
+  <td>No map needed</td>
+</tr>
+<tr>
+  <td>Planning</td>
+  <td>Explicit global/local planner</td>
+  <td>End-to-end reactive policy</td>
+</tr>
+<tr>
+  <td>Tuning effort</td>
+  <td>High (multiple modules)</td>
+  <td>Lower post-training</td>
+</tr>
+<tr>
+  <td>Explainability</td>
+  <td>High (traceable modules)</td>
+  <td>Low (black-box policy)</td>
+</tr>
+<tr>
+  <td>Safety readiness</td>
+  <td>Easier to certify</td>
+  <td>Harder without safety shields</td>
+</tr>
+<tr>
+  <td>Best use case</td>
+  <td>Safety-critical + known environments</td>
+  <td>Variable layouts, adaptability</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Q: What reward design is used?</strong>
+- Basic: progress toward goal.
+- Advanced: goal-approach shaping + strong wall-proximity penalty.
+- Advanced reward + ResBlock-PPO = best results in cluttered world.</p>
+
+<p><strong>Q: What are the threats to validity?</strong>
+1. Simulation-only — may not transfer to real floors (wheel slip, sensor drift).
+2. Goal coordinates reliably available in sim — harder in real deployment.
+3. Compressed LiDAR misses semantic cues (transparent obstacles, human intent).</p>
+
+<hr />
+
+<hr />
+
+<h2 id="part-3-cross-assignment-connections">PART 3 — CROSS-ASSIGNMENT CONNECTIONS</h2>
+
+<blockquote>
+  <p><strong>The story so far — connecting everything:</strong></p>
+  
+  <p>Assignment 1 answers: <em>"How do we describe what a robot does in the real world?"</em>
+  — We built a motion model (noisy movement) and a sensor model (noisy readings).</p>
+  
+  <p>Assignment 2 answers: <em>"Given noisy movement and noisy sensing, can we build a robot that still navigates reliably?"</em>
+  — Yes: MCL corrects position drift, SLAM builds maps from noisy scans, D* plans despite unknown obstacles, RL improves efficiency, and CNN tries to replace classical planning entirely.</p>
+  
+  <p><strong>The thread:</strong> Every module in Assignment 2 directly <em>uses</em> or <em>builds on</em> the models from Assignment 1. Nothing is disconnected.</p>
+</blockquote>
+
+<hr />
+
+<p><strong>Q: How does Assignment 1 feed into Assignment 2?</strong></p>
+
+<table>
+<thead>
+<tr>
+  <th>Ass-1 Concept</th>
+  <th>Used in Ass-2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Velocity motion model (circular-arc + noise)</td>
+  <td>MCL prediction step (Part A)</td>
+</tr>
+<tr>
+  <td>Beam sensor model (4-component mixture)</td>
+  <td>MCL weighting + Grid SLAM ray-casting (Parts A, B)</td>
+</tr>
+<tr>
+  <td>Monte Carlo sampling</td>
+  <td>MCL particle filter (Part A)</td>
+</tr>
+<tr>
+  <td>Restaurant map (10m × 8m, obstacles)</td>
+  <td>Shared map for all Ass-2 parts</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Q: What is the progression from Ass-1 to Ass-2?</strong>
+- Ass-1 establishes <strong>how a robot moves and senses</strong> under uncertainty.
+- Ass-2 builds on that to ask: <strong>given uncertainty, how do we localize, map, plan, and eventually replace classical modules with learned ones?</strong></p>
+
+<p><strong>Q: Classical vs. learning-based — which is better?</strong>
+- No single winner. Classical is more explainable and certifiable; learning-based adapts better.
+- Hybrid (RL for frontier selection, CNN as D* replacement) is the practical sweet spot.</p>
+
+<hr />
+
+<h3 id="why-do-we-use-both-mcl-and-slam-arent-they-contradictory">Why do we use BOTH MCL and SLAM? Aren't they contradictory?</h3>
+
+<blockquote>
+  <p>This is one of the most common viva misconceptions. Here is the full answer.</p>
+</blockquote>
+
+<p><strong>The short answer:</strong> They solve <em>different problems</em> and are used in <em>different phases</em> of the robot's life.</p>
+
+<table>
+<thead>
+<tr>
+  <th></th>
+  <th>MCL (Part A)</th>
+  <th>Grid SLAM (Part B)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>Question it answers</strong></td>
+  <td><em>Where am I?</em></td>
+  <td><em>What does the room look like?</em></td>
+</tr>
+<tr>
+  <td><strong>Requires a map?</strong></td>
+  <td>Yes — needs an existing map to match scans against</td>
+  <td>No — builds the map from scratch</td>
+</tr>
+<tr>
+  <td><strong>Produces a map?</strong></td>
+  <td>No — only estimates the robot's pose</td>
+  <td>Yes — outputs an occupancy grid</td>
+</tr>
+<tr>
+  <td><strong>Used when?</strong></td>
+  <td>Robot is operating in a <em>known</em> environment (day-to-day delivery)</td>
+  <td>Robot is exploring a <em>new/unknown</em> space for the first time</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>The full picture — two phases of a real robot's life:</strong></p>
+
+<pre><code>Phase 1 — First ever deployment (Map unknown)
+  └─► Run GRID SLAM: robot explores the restaurant,
+      builds the occupancy map, saves it to disk.
+      (Done ONCE — or whenever the layout changes)
+
+Phase 2 — Every delivery shift after that (Map known)
+  └─► Run MCL: robot loads the saved map and uses
+      it to localize itself continuously during delivery.
+      (Done EVERY time the robot operates)
+</code></pre>
+
+<blockquote>
+  <p><strong>Analogy:</strong> Think of a new employee at a restaurant.
+  - <strong>Day 1 (SLAM):</strong> They walk the whole restaurant floor, memorise where everything is, and draw a mental map.
+  - <strong>Day 2 onwards (MCL):</strong> Each morning they arrive and quickly figure out where they are by matching landmarks to their memory. They don't redraw the map every day.</p>
+</blockquote>
+
+<p><strong>Why does the assignment do both separately?</strong>
+- It is pedagogically cleaner to learn each skill in isolation.
+- Part A demonstrates <em>localization given a map</em> (hard enough on its own).
+- Part B demonstrates <em>mapping given approximate poses</em> (also hard on its own).
+- Full SLAM (localization AND mapping at the same time with no known map and no known poses) is significantly harder — it is covered in advanced robotics courses.</p>
+
+<p><strong>What is Full SLAM then?</strong>
+- Full SLAM does both simultaneously: estimates robot pose <em>and</em> builds map at the same time.
+- It is needed when you cannot assume pose is known during mapping.
+- Our assignment splits it into two cleaner sub-problems for clarity, which is a common teaching approach.</p>
+
+<p><strong>Key sentence to say in a viva:</strong></p>
+
+<blockquote>
+  <p><em>"MCL and SLAM are complementary, not competing. SLAM is used once to build the map; MCL is used every time the robot needs to know where it is on that map. Together they form the localization-and-mapping backbone of the full navigation pipeline."</em></p>
+</blockquote>
+
+<hr />
+
+<h2 id="part-4-formula-cheat-sheet">PART 4 — FORMULA CHEAT SHEET</h2>
+
+<blockquote>
+  <p><strong>How to use this:</strong> Each formula has a plain-English interpretation. Don't just memorise the symbols — understand what each formula <em>does</em>.</p>
+</blockquote>
+
+<table>
+<thead>
+<tr>
+  <th>Concept</th>
+  <th>Formula</th>
+  <th>What it does in one line</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>MCL motion (simplified)</td>
+  <td>$x' = x + v\cos\theta \cdot dt$, $y' = y + v\sin\theta \cdot dt$, $\theta' = \theta + \omega \cdot dt$</td>
+  <td>Move the particle forward by one timestep using noisy velocity</td>
+</tr>
+<tr>
+  <td>Beam model</td>
+  <td>$p(z|z^*) = \alpha<em>h p</em>{hit} + \alpha<em>s p</em>{short} + \alpha<em>m p</em>{max} + \alpha<em>r p</em>{rand}$</td>
+  <td>Blend four failure modes to get the total probability of a sensor reading</td>
+</tr>
+<tr>
+  <td>Log-odds update</td>
+  <td>$l<em>t = l</em>{t-1} + \log\frac{p_{occ}}{1-p_{occ}}$</td>
+  <td>Accumulate evidence for a cell being occupied — add free/occupied constants each scan</td>
+</tr>
+<tr>
+  <td>D* rhs</td>
+  <td>$\text{rhs}(s) = \min_{\text{nbr}} [g(\text{nbr}) + \text{cost}]$</td>
+  <td>Check if the cheapest one-step detour to any neighbour beats the current route</td>
+</tr>
+<tr>
+  <td>RL Q-update</td>
+  <td>$Q \leftarrow Q + \alpha(\text{reward} - Q)$</td>
+  <td>Nudge the Q-value toward the actual reward received — learn slowly and stably</td>
+</tr>
+<tr>
+  <td>CNN loss</td>
+  <td>$\mathcal{L} = -\sum y_i \log \hat{y}_i$ (cross-entropy)</td>
+  <td>Penalise the CNN more when it is confidently wrong about which direction to move</td>
+</tr>
+<tr>
+  <td>PPO objective</td>
+  <td>$L^{clip} = \mathbb{E}[\min(r<em>t A</em>t, \text{clip}(r<em>t, 1-\varepsilon, 1+\varepsilon)A</em>t)]$</td>
+  <td>Update policy weights but clip extreme changes to keep training stable</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<h2 id="part-5-top-20-viva-questions-rapid-fire">PART 5 — TOP 20 VIVA QUESTIONS (RAPID FIRE)</h2>
+
+<blockquote>
+  <p><strong>Tip for the viva:</strong> For every answer, try to follow up with a real-world example from the restaurant. Examiners appreciate when you connect theory to the scenario.</p>
+</blockquote>
+
+<table>
+<thead>
+<tr>
+  <th>#</th>
+  <th>Question</th>
+  <th>One-line Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>1</td>
+  <td>Why differential drive?</td>
+  <td>Simple, works indoors, well-understood kinematics</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td>Why LiDAR + camera together?</td>
+  <td>LiDAR for range/obstacles; camera for semantics (table IDs, guests)</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td>What do α₁–α₆ control?</td>
+  <td>Amount of Gaussian noise added to translation and rotation</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td>Why does uncertainty grow with distance?</td>
+  <td>Noise accumulates with every motion step — errors are additive</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td>Why 4 beam model components?</td>
+  <td>Each captures a different real-world failure mode of range sensors</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td>What is dead-reckoning?</td>
+  <td>Estimating position from velocity/wheel data alone, no external correction</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td>Why is MCL better than dead-reckoning?</td>
+  <td>MCL uses sensor observations to correct drift</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td>Why log-odds for SLAM?</td>
+  <td>Allows simple additive sensor fusion; numerically stable</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td>What is IoU?</td>
+  <td>Intersection over Union — fraction of map correctly recovered</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td>Why D* over A*?</td>
+  <td>D* repairs only changed parts of the plan — faster replanning</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td>What is a frontier cell?</td>
+  <td>Free cell adjacent to unknown space — exploration target</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td>What does ε-greedy do?</td>
+  <td>Balances exploration (random) vs exploitation (best known action)</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td>Why RL only for frontier, not full planning?</td>
+  <td>Classical mapping is stable; RL improves efficiency without risk</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td>What does the CNN learn?</td>
+  <td>To imitate D*'s next-move decisions from local map observations</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td>Why cross-entropy for CNN?</td>
+  <td>Multi-class action prediction — measures probability gap between predicted and true action</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td>What is mapless navigation?</td>
+  <td>Robot navigates without building or using an explicit global map</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td>What is residual block advantage?</td>
+  <td>Preserves gradients through network layers; better optimization</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td>Why sigmoid for linear vel and tanh for angular?</td>
+  <td>Sigmoid bounds [0, v_max] (forward only); tanh bounds [-ω, +ω] (bidirectional turn)</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td>Main threat to PPO paper validity?</td>
+  <td>Simulation-only; real-world transfer not validated</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td>What is the biggest practical takeaway?</td>
+  <td>Uncertainty must be modeled explicitly — neither motion nor sensing is perfect</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<hr />
+
+<h2 id="part-6-how-to-explain-each-module-in-30-seconds">PART 6 — HOW TO EXPLAIN EACH MODULE IN 30 SECONDS</h2>
+
+<blockquote>
+  <p>Use these as verbal scripts if asked to explain any module quickly in the viva.</p>
+</blockquote>
+
+<p><strong>Motion Model:</strong></p>
+
+<blockquote>
+  <p>"When the robot moves, it doesn't arrive exactly where it should — wheels slip, motors aren't perfect. The velocity motion model takes the commanded speed, adds Gaussian noise through six α parameters, and gives a probability distribution over where the robot <em>probably</em> ended up. Higher α means more noise — like a slippery wet floor."</p>
+</blockquote>
+
+<p><strong>Beam Sensor Model:</strong></p>
+
+<blockquote>
+  <p>"The LiDAR fires lasers and gets distances back. But readings aren't always correct — something might block the beam early, or the beam might return nothing. We model this with a 4-component mixture: hit (correct reading), short (something in the way), max (no return), random (noise). Each has a weight summing to 1, giving the full probability of any reading."</p>
+</blockquote>
+
+<p><strong>MCL:</strong></p>
+
+<blockquote>
+  <p>"Spread 500 random guesses (particles) over the map for where the robot might be. Move them all forward with the motion model. Then use LiDAR readings to score each particle — those that fit the map well get high weight. Resample: keep the good ones, drop the bad ones. After a few cycles, particles cluster around the true location."</p>
+</blockquote>
+
+<p><strong>Grid SLAM:</strong></p>
+
+<blockquote>
+  <p>"Drive a lawnmower pattern to cover the restaurant. At each position, fire LiDAR beams. For each beam, add free-space evidence along the path and occupied evidence at the endpoint using log-odds. After full coverage, convert log-odds to probabilities and threshold to get a binary map. Compare to ground truth with IoU."</p>
+</blockquote>
+
+<p><strong>D* Lite:</strong></p>
+
+<blockquote>
+  <p>"Compute a shortest path from start to goal on the learned map using cost-to-goal values (g). When an obstacle appears, only the nodes whose one-step consistency (rhs = min neighbour cost) is broken need updating. Propagate those fixes outward — you get a new path in a fraction of the time A* would take."</p>
+</blockquote>
+
+<p><strong>RL Frontier Exploration:</strong></p>
+
+<blockquote>
+  <p>"During mapping, detect all frontier cells (free cells touching unknown space). Use ε-greedy to pick one. Simulate what the map would look like after scanning from there. Reward = number of new cells revealed. Update the Q-value for that frontier type. Over time the robot learns to head for frontiers that reveal the most new space."</p>
+</blockquote>
+
+<p><strong>CNN Planner:</strong></p>
+
+<blockquote>
+  <p>"Generate thousands of random maps. For each, run D* and record its first move. Build a local 2-channel observation (occupancy patch + goal direction). Train a CNN with cross-entropy to predict D*'s move. At test time, roll out the trained CNN on the restaurant map and compare its path to D*'s path."</p>
+</blockquote>
+
+<p><strong>PPO (Research Paper):</strong></p>
+
+<blockquote>
+  <p>"The robot observes 10 LiDAR features, previous velocity, goal in polar form, and yaw — 16 numbers total. A ResBlock actor-critic network outputs continuous speed and turn rate. PPO trains this end-to-end using a clipped surrogate objective that prevents dangerously large policy updates. Advanced reward shaping adds wall-proximity penalty to improve safety. No map, no localization, no explicit planner — one network does it all."</p>
+</blockquote>
+
+<hr />
+
+<hr />
+
+<h2 id="part-7-pipeline-decisions-at-a-glance">PART 7 — PIPELINE DECISIONS AT A GLANCE</h2>
+
+<blockquote>
+  <p><strong>Quick-reference table for the entire pipeline — why each module was chosen over its alternatives.</strong></p>
+</blockquote>
+
+<h3 id="assignment-1">Assignment 1</h3>
+
+<table>
+<thead>
+<tr>
+  <th>Module</th>
+  <th>Chosen Approach</th>
+  <th>Alternatives Rejected</th>
+  <th>Key Reason for Choice</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>Robot Platform</strong></td>
+  <td>Differential-drive AMR</td>
+  <td>Holonomic / Ackermann drive</td>
+  <td>Simplest indoor kinematics; well-understood motion model; low-cost hardware</td>
+</tr>
+<tr>
+  <td><strong>Localization sensor</strong></td>
+  <td>2D LiDAR (360°)</td>
+  <td>Camera-only, ultrasonic</td>
+  <td>Long range, full-circle coverage, works in any lighting; direct input to beam model</td>
+</tr>
+<tr>
+  <td><strong>Motion model</strong></td>
+  <td>Velocity-based circular-arc + Gaussian noise (α₁–α₆)</td>
+  <td>Odometry-only, deterministic model</td>
+  <td>Captures real wheel-slip and motor noise probabilistically; 6 α parameters tune to any surface</td>
+</tr>
+<tr>
+  <td><strong>Sensor model</strong></td>
+  <td>4-component beam mixture (hit, short, max, rand)</td>
+  <td>Simple Gaussian model, threshold model</td>
+  <td>Each component covers a real failure mode; naturally handles dynamic obstacles without special logic</td>
+</tr>
+<tr>
+  <td><strong>Trajectory analysis</strong></td>
+  <td>Monte Carlo simulation (100 runs)</td>
+  <td>Single-run simulation</td>
+  <td>Quantifies uncertainty as a distribution, not a single path; produces 1σ/2σ ellipses</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<h3 id="assignment-2">Assignment 2</h3>
+
+<table>
+<thead>
+<tr>
+  <th>Step</th>
+  <th>Module</th>
+  <th>Chosen Approach</th>
+  <th>Key Alternatives</th>
+  <th>Key Reason for Choice</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>STEP 1</strong></td>
+  <td>Localization</td>
+  <td>MCL — particle filter</td>
+  <td>EKF, Histogram filter, Pure odometry</td>
+  <td>Handles multi-modal uncertainty; corrects drift with sensor feedback; scales to noisy dynamic environments</td>
+</tr>
+<tr>
+  <td><strong>STEP 2</strong></td>
+  <td>Mapping</td>
+  <td>Grid SLAM — log-odds occupancy</td>
+  <td>Graph SLAM, Visual SLAM, 3D voxel map</td>
+  <td>Works directly with 2D LiDAR; additive log-odds updates; output is a binary grid directly usable by D*</td>
+</tr>
+<tr>
+  <td><strong>STEP 3</strong></td>
+  <td>Path Planning</td>
+  <td>D* Lite</td>
+  <td>A*, Dijkstra, RRT, Potential Fields</td>
+  <td>Incremental replanning — repairs only affected nodes when obstacle appears; A* replans entire path</td>
+</tr>
+<tr>
+  <td><strong>STEP 4</strong></td>
+  <td>Exploration</td>
+  <td>RL Q-learning (ε-greedy frontier)</td>
+  <td>Greedy nearest, Random, Full DQN, Lawnmower</td>
+  <td>Adaptive and learns over episodes; lightweight Q-table sufficient for discrete frontier selection</td>
+</tr>
+<tr>
+  <td><strong>STEP 5</strong></td>
+  <td>Deep Planner</td>
+  <td>CNN imitation of D*</td>
+  <td>DQN, PPO RL, RNN/LSTM</td>
+  <td>No environment interaction needed; trains on D* labels directly; O(1) inference vs graph search</td>
+</tr>
+<tr>
+  <td><strong>Research Paper</strong></td>
+  <td>End-to-end Nav</td>
+  <td>ResBlock-PPO (mapless)</td>
+  <td>DDPG, Vanilla PPO, DQN</td>
+  <td>Residual blocks improve gradient flow; clipped PPO objective prevents destructive updates; best results in cluttered worlds</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<h3 id="why-not-just-use-one-approach-for-everything">Why Not Just Use One Approach for Everything?</h3>
+
+<table>
+<thead>
+<tr>
+  <th>If you only used…</th>
+  <th>Problem</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>Only MCL</strong></td>
+  <td>Needs a pre-existing map — useless on day 1 in unknown space</td>
+</tr>
+<tr>
+  <td><strong>Only SLAM</strong></td>
+  <td>Builds a map but cannot localize precisely for delivery guidance</td>
+</tr>
+<tr>
+  <td><strong>Only D</strong>*</td>
+  <td>Needs a map to plan on — blind without SLAM</td>
+</tr>
+<tr>
+  <td><strong>Only RL (PPO/DQN end-to-end)</strong></td>
+  <td>Black box, hard to certify, needs massive training data, fails in unseen layouts</td>
+</tr>
+<tr>
+  <td><strong>Only CNN planner</strong></td>
+  <td>Trained on D* labels — inherits D*'s limitations; no replanning on its own</td>
+</tr>
+<tr>
+  <td><strong>All classical (MCL + SLAM + D*)</strong></td>
+  <td>Cannot adapt to highly variable layouts without re-tuning every module</td>
+</tr>
+<tr>
+  <td><strong>Full pipeline (chosen)</strong></td>
+  <td>Each module handles the problem it is best at; failures in one module are contained and recoverable</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+  <p><strong>One-line summary for viva:</strong>
+  <em>"Every module was chosen because it handles a specific problem that no simpler alternative could handle reliably in a noisy, dynamic, real restaurant environment."</em></p>
+</blockquote>
+
+<hr />
+
+<p><em>Prepared from Group2 Assignment 1 &amp; Assignment 2 — AIML ZG528 Robotics, 2026</em></p>
+
+<hr />
+
+<h2 id="part-8-tricky-surprise-viva-questions">PART 8 — Tricky &amp; Surprise Viva Questions</h2>
+
+<blockquote>
+  <p>These are questions examiners love to ask that go beyond the obvious. Read each one, cover the answer, and try to answer from memory.</p>
+</blockquote>
+
+<hr />
+
+<p><strong>Q: What is particle degeneracy and how do you fix it?</strong>
+- <strong>What it is:</strong> After many resampling steps, all particles collapse to one or a few identical poses — the filter loses diversity and can no longer recover if the robot is wrong
+- <strong>Why it happens:</strong> Low-weight particles are repeatedly discarded; eventually only clones of the best particle survive
+- <strong>How to fix it:</strong>
+  - Add a small number of <strong>random particles</strong> each cycle (keeps diversity alive)
+  - Use <strong>low-variance resampling</strong> (systematic resampling) instead of naive multinomial sampling
+  - Increase particle count N
+- <strong>In our assignment:</strong> Adding random jitter during resampling addresses this directly</p>
+
+<hr />
+
+<p><strong>Q: What is loop closure and why doesn't our SLAM need it?</strong>
+- <strong>What loop closure is:</strong> When a robot revisits a previously mapped area, it must recognise it and correct accumulated drift in the map — otherwise the same corridor appears twice
+- <strong>Why our SLAM avoids it:</strong> We use a fixed lawnmower path with known waypoints — the robot's pose is always approximately known from odometry + the structured path; there is no long-range drift to correct
+- <strong>When loop closure IS needed:</strong> In large, unstructured environments where the robot roams freely; Graph SLAM and ORB-SLAM are designed for this
+- <strong>Viva answer:</strong> <em>"Our Grid SLAM avoids loop closure because we control the exploration path explicitly via lawnmower waypoints, keeping pose error bounded. In a free-roaming scenario, we would need Graph SLAM with loop closure detection."</em></p>
+
+<hr />
+
+<p><strong>Q: What happens to MCL if the robot is kidnapped (picked up and placed somewhere else)?</strong>
+- <strong>Problem:</strong> All particles are clustered at the old location; after kidnapping, none of them match the new sensor readings → weights all collapse to near-zero → robot is lost
+- <strong>Fix — Kidnap recovery:</strong>
+  - Inject a small fraction of uniformly random particles every timestep
+  - Monitor average weight: if it drops sharply, inject many random particles to re-spread
+  - This is called <strong>adaptive MCL</strong> or <strong>augmented MCL</strong>
+- <strong>In a restaurant context:</strong> A staff member picking up and moving the robot triggers kidnapping; recovery particles let it re-localize without a full restart</p>
+
+<hr />
+
+<p><strong>Q: Can D* Lite guarantee the optimal path after replanning?</strong>
+- <strong>Yes</strong> — D* Lite is provably optimal on the updated map: it finds the shortest path given the new obstacle configuration
+- <strong>Caveat:</strong> Optimality is w.r.t. the <strong>learned_grid</strong> (SLAM output) — if that map has errors (low IoU), D* finds the optimal path on a wrong map, which may not be optimal in reality
+- <strong>Key insight:</strong> The quality of planning is bounded by the quality of the map — this is why SLAM IoU matters</p>
+
+<hr />
+
+<p><strong>Q: Why do we use cross-entropy loss for the CNN planner and not mean squared error (MSE)?</strong>
+- <strong>Action prediction is a classification problem</strong> (4 discrete actions), not regression
+- MSE treats class labels as continuous numbers (e.g., class 0 and class 3 are "far apart") — this is meaningless for directions
+- Cross-entropy measures the probability gap between predicted distribution and true one-hot label
+- A model that predicts action 1 with 99% confidence when the correct answer is action 0 is penalised heavily — MSE would only penalise by (1−0)² = 1, which is weak</p>
+
+<hr />
+
+<p><strong>Q: What is the advantage of tanh for angular velocity output and sigmoid for linear velocity in PPO?</strong>
+- <strong>Sigmoid</strong> maps any real number → (0, 1), then scaled to (0, v<em>max) — ensures the robot always moves <strong>forward</strong> (no negative linear velocity for a forward-delivery robot)
+- <strong>Tanh</strong> maps any real number → (−1, +1), then scaled to (−ω</em>max, +ω_max) — allows turning <strong>both left and right</strong> symmetrically
+- Using the wrong activation would produce physically invalid commands (e.g., driving backwards, or turning only one way)</p>
+
+<hr />
+
+<p><strong>Q: If SLAM and MCL both use the beam sensor model — what is the difference in how they use it?</strong></p>
+
+<table>
+<thead>
+<tr>
+  <th></th>
+  <th>MCL (Part A)</th>
+  <th>Grid SLAM (Part B)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>Map role</strong></td>
+  <td>Map is fixed and known; beam model scores particles against it</td>
+  <td>Map is being built; beam model determines which cells to update</td>
+</tr>
+<tr>
+  <td><strong>Beam model output used for</strong></td>
+  <td>Computing particle weight (likelihood of a pose)</td>
+  <td>Computing free/occupied log-odds updates for each cell</td>
+</tr>
+<tr>
+  <td><strong>Direction of inference</strong></td>
+  <td>Given sensor reading, infer: <em>how likely is this particle pose?</em></td>
+  <td>Given robot pose, infer: <em>which cells are free vs occupied?</em></td>
+</tr>
+<tr>
+  <td><strong>Map changes?</strong></td>
+  <td>No — map stays constant</td>
+  <td>Yes — map grows with every scan</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<p><strong>Q: Why do we fire laser beams in the Beam Sensor Model, MCL, and Grid SLAM — isn't that the same thing three times?</strong></p>
+
+<blockquote>
+  <p><strong>No — same physical sensor, three completely different purposes. This is one of the most common confusions.</strong></p>
+</blockquote>
+
+<p><strong>First: what is the LiDAR beam physically?</strong>
+- The robot fires laser beams in all directions
+- Each beam travels until it hits something and returns a distance reading <code>z</code>
+- This is a single hardware action — the sensor produces a list of distances</p>
+
+<p><strong>Now — why does it appear in three places?</strong></p>
+
+<table>
+<thead>
+<tr>
+  <th>Module</th>
+  <th>Beams fired?</th>
+  <th>What the beam reading is used for</th>
+  <th>Question being answered</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>Beam Sensor Model (Ass-1)</strong></td>
+  <td>No — this is pure <strong>maths</strong>, no robot</td>
+  <td>Defines the probability <code>p(z|z*)</code> — how likely is reading <code>z</code> given true distance <code>z*</code></td>
+  <td><em>"How do we mathematically model what a noisy beam might return?"</em></td>
+</tr>
+<tr>
+  <td><strong>MCL (Part A)</strong></td>
+  <td>Yes — robot fires real LiDAR</td>
+  <td>Uses <code>p(z|z*)</code> to <strong>score particles</strong> — compare what each particle <em>would</em> see vs what the robot <em>actually</em> sees</td>
+  <td><em>"Given what I'm seeing right now, which of my pose guesses is correct?"</em></td>
+</tr>
+<tr>
+  <td><strong>Grid SLAM (Part B)</strong></td>
+  <td>Yes — robot fires real LiDAR</td>
+  <td>Uses each beam to <strong>update the map</strong> — cells along the beam = free, endpoint cell = occupied</td>
+  <td><em>"Given where I am right now, what can I add to the map?"</em></td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>The key insight — direction of reasoning is opposite:</strong></p>
+
+<pre><code>BEAM SENSOR MODEL:    p(z | z*)
+                      ↑ maths only — describes noise
+
+MCL:      actual z  →  p(z | particle pose)  →  weight the particle
+          "I see z. Does this particle's location explain what I see?"
+
+SLAM:     known pose  →  ray hits cell (r,c)  →  update log-odds of (r,c)
+          "I know where I am. What does this beam tell me about the map?"
+</code></pre>
+
+<p><strong>Restaurant analogy:</strong>
+- <strong>Beam model</strong> = the rulebook: "When a waiter walks in front of a beam, expect a shorter reading 80% of the time" (just theory)
+- <strong>MCL</strong> = detective work: "I see a wall 2 m ahead and 3 m left — that matches being near Table 2 on the map" (find yourself)
+- <strong>SLAM</strong> = cartography: "I'm at the kitchen doorway, my beam hits something 4 m ahead — mark that cell as occupied" (build the map)</p>
+
+<blockquote>
+  <p><strong>One-line rule:</strong>
+  - Beam model = <em>how to interpret a reading</em> (probability formula)
+  - MCL = <em>fire beams to find yourself</em> on a known map
+  - SLAM = <em>fire beams to build the map</em> from a known position</p>
+</blockquote>
+
+<hr />
+
+<p><strong>Q: Why is the RL Q-update simplified (no discount factor γ)?</strong>
+- Standard Q-learning: <code>Q ← Q + α(reward + γ·max_Q_next − Q)</code>
+- Our version: <code>Q ← Q + α(reward − Q)</code> — effectively γ = 0 (no future reward, only immediate)
+- <strong>Why this works here:</strong> Frontier selection is a <strong>single-step decision</strong> — we pick one frontier, observe the immediate information gain, and that's the full interaction. There is no meaningful future state to discount toward
+- If the exploration involved multi-step sequences (e.g., navigating through several rooms), γ &gt; 0 would be needed</p>
+
+<hr />
+
+<p><strong>Q: What would you do if the IoU of the SLAM map is very low (e.g., 0.3)?</strong>
+- Poor IoU means the learned map is significantly different from the true environment
+- <strong>Consequences:</strong> D* plans incorrect paths; CNN trains on wrong data
+- <strong>Fixes:</strong>
+  - Increase sensor range or beam density
+  - Add more waypoints for denser coverage
+  - Tune free/occupied log-odds constants to be less aggressive (reduce false positives)
+  - Reduce motion model noise (better pose accuracy during mapping)
+- <strong>Key point for viva:</strong> IoU directly cascades — poor mapping → poor planning → poor CNN training</p>
+
+<hr />
+
+<h2 id="part-9-failure-modes-what-can-go-wrong">PART 9 — Failure Modes: What Can Go Wrong?</h2>
+
+<blockquote>
+  <p>Every examiner will ask some variant of "when does your system fail?". Know these cold.</p>
+</blockquote>
+
+<table>
+<thead>
+<tr>
+  <th>Module</th>
+  <th>Failure Condition</th>
+  <th>What Happens</th>
+  <th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>Motion Model</strong></td>
+  <td>α values too high</td>
+  <td>Particles spread so wide they never converge</td>
+  <td>Calibrate α to actual floor conditions; use IMU to correct</td>
+</tr>
+<tr>
+  <td><strong>Motion Model</strong></td>
+  <td>α values too low</td>
+  <td>Model is overconfident; ignores real slip on wet floor</td>
+  <td>Measure real noise empirically; increase α for spill zones</td>
+</tr>
+<tr>
+  <td><strong>Beam Sensor Model</strong></td>
+  <td>Wrong α weights (p_hit too low)</td>
+  <td>Robot ignores correct readings; weighted toward noise</td>
+  <td>Calibrate on actual environment; cross-validate</td>
+</tr>
+<tr>
+  <td><strong>MCL</strong></td>
+  <td>Particle degeneracy</td>
+  <td>All particles at one wrong pose; cannot recover from error</td>
+  <td>Inject random particles; use adaptive particle count</td>
+</tr>
+<tr>
+  <td><strong>MCL</strong></td>
+  <td>Robot kidnapping</td>
+  <td>Particles clustered at old location; no match to new readings</td>
+  <td>Augmented MCL — inject random particles when avg weight drops</td>
+</tr>
+<tr>
+  <td><strong>Grid SLAM</strong></td>
+  <td>Low coverage (sparse waypoints)</td>
+  <td>Large unknown regions in learned map; D* cannot route through them</td>
+  <td>Increase waypoint density; check IoU after mapping</td>
+</tr>
+<tr>
+  <td><strong>Grid SLAM</strong></td>
+  <td>Accumulated pose error</td>
+  <td>Map is smeared or duplicated (ghosting)</td>
+  <td>Use odometry correction; limit total path length per session</td>
+</tr>
+<tr>
+  <td><strong>D* Lite</strong></td>
+  <td>Wrong obstacle in learned map</td>
+  <td>Plans path through a phantom wall or ignores real wall</td>
+  <td>Improve SLAM IoU; add sensor verification step before planning</td>
+</tr>
+<tr>
+  <td><strong>D* Lite</strong></td>
+  <td>Obstacle blocks only valid path</td>
+  <td>No path exists → planner fails with no route</td>
+  <td>Add goal relaxation (expand goal region); request human intervention</td>
+</tr>
+<tr>
+  <td><strong>RL Frontier</strong></td>
+  <td>Q-table overfits to one layout</td>
+  <td>Performs well on training map but poorly on layout variations</td>
+  <td>Increase ε (more exploration); train on diverse map configurations</td>
+</tr>
+<tr>
+  <td><strong>CNN Planner</strong></td>
+  <td>Distribution shift</td>
+  <td>Trained on random maps; restaurant layout is too different</td>
+  <td>Retrain on restaurant-specific maps; use D* as fallback</td>
+</tr>
+<tr>
+  <td><strong>CNN Planner</strong></td>
+  <td>Myopic local view</td>
+  <td>Sees local patch only; gets stuck in dead-ends that look clear locally</td>
+  <td>Increase patch size; add global goal channel</td>
+</tr>
+<tr>
+  <td><strong>PPO (Paper)</strong></td>
+  <td>Sim-to-real gap</td>
+  <td>Policy trained in Gazebo; real floors have different friction and sensor noise</td>
+  <td>Domain randomisation during training; fine-tune on real robot</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<h2 id="part-10-computational-complexity-quick-reference">PART 10 — Computational Complexity Quick Reference</h2>
+
+<blockquote>
+  <p>Useful if the examiner asks "how does it scale?" or "is it real-time feasible?"</p>
+</blockquote>
+
+<table>
+<thead>
+<tr>
+  <th>Module</th>
+  <th>Time Complexity</th>
+  <th>Space Complexity</th>
+  <th>Real-time feasible?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>Motion Model</strong> (per particle)</td>
+  <td>O(1)</td>
+  <td>O(1)</td>
+  <td>Yes</td>
+</tr>
+<tr>
+  <td><strong>MCL</strong> (N particles, B beams)</td>
+  <td>O(N × B) per step</td>
+  <td>O(N)</td>
+  <td>Yes for N ≤ 1000</td>
+</tr>
+<tr>
+  <td><strong>Beam Sensor Model</strong></td>
+  <td>O(B) per pose</td>
+  <td>O(1)</td>
+  <td>Yes</td>
+</tr>
+<tr>
+  <td><strong>Grid SLAM</strong> (W×H grid, B beams)</td>
+  <td>O(W×H + B) per waypoint</td>
+  <td>O(W×H)</td>
+  <td>Yes (offline mapping)</td>
+</tr>
+<tr>
+  <td><strong>Log-odds update</strong></td>
+  <td>O(1) per cell</td>
+  <td>O(1)</td>
+  <td>Yes</td>
+</tr>
+<tr>
+  <td><strong>D* Lite</strong> (initial)</td>
+  <td>O(n log n) where n = grid cells</td>
+  <td>O(n)</td>
+  <td>Yes for small grids</td>
+</tr>
+<tr>
+  <td><strong>D* Lite</strong> (replan after obstacle)</td>
+  <td>O(k log k) where k = affected nodes</td>
+  <td>O(k)</td>
+  <td>Yes — much faster than A* replan</td>
+</tr>
+<tr>
+  <td><strong>A* replan</strong> (for comparison)</td>
+  <td>O(n log n) every time</td>
+  <td>O(n)</td>
+  <td>Slow for large maps or frequent changes</td>
+</tr>
+<tr>
+  <td><strong>RL Q-learning</strong> (per step)</td>
+  <td>O(|frontiers|)</td>
+  <td>O(|frontiers|)</td>
+  <td>Yes</td>
+</tr>
+<tr>
+  <td><strong>CNN inference</strong></td>
+  <td>O(1) — fixed network forward pass</td>
+  <td>O(model size)</td>
+  <td>Yes — fastest of all planners</td>
+</tr>
+<tr>
+  <td><strong>CNN training</strong></td>
+  <td>O(epochs × dataset size)</td>
+  <td>O(dataset + model)</td>
+  <td>Offline only</td>
+</tr>
+<tr>
+  <td><strong>PPO training</strong></td>
+  <td>O(episodes × steps × network)</td>
+  <td>O(network + replay)</td>
+  <td>Offline only</td>
+</tr>
+<tr>
+  <td><strong>PPO inference</strong></td>
+  <td>O(1) — single forward pass</td>
+  <td>O(model size)</td>
+  <td>Yes</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+  <p><strong>Key comparison for viva:</strong>
+  - D* initial plan = O(n log n); D* replan = O(k log k) where k &lt;&lt; n → this is why D* beats A* in dynamic environments
+  - CNN inference = O(1) → fastest possible; but accuracy depends on training quality
+  - MCL scales linearly with particle count N — tuning N balances accuracy vs speed</p>
+</blockquote>
+
+<hr />
+
+<h2 id="part-11-why-not-bio-inspired-algorithms">PART 11 — Why Not Bio-Inspired Algorithms?</h2>
+
+<blockquote>
+  <p><strong>Context:</strong> Bio-inspired algorithms like ACO, PSO, Firefly, and Genetic Algorithms are powerful global optimizers. A common viva question is: <em>"These are popular optimization techniques — why didn't you use them?"</em></p>
+  
+  <p><strong>Short answer:</strong> They are excellent for offline static optimization. Our pipeline needs <strong>real-time, dynamic, incremental</strong> decisions — which is exactly where these algorithms struggle.</p>
+</blockquote>
+
+<hr />
+
+<h3 id="what-are-these-algorithms">What Are These Algorithms?</h3>
+
+<table>
+<thead>
+<tr>
+  <th>Algorithm</th>
+  <th>Inspired By</th>
+  <th>Core Idea</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>ACO</strong> (Ant Colony Optimization)</td>
+  <td>Ant pheromone trails</td>
+  <td>Ants deposit pheromones on good paths; over many iterations, short paths attract more ants and get reinforced</td>
+</tr>
+<tr>
+  <td><strong>PSO</strong> (Particle Swarm Optimization)</td>
+  <td>Bird flocking / fish schooling</td>
+  <td>A swarm of particles explores the solution space; each particle moves toward its own best and the swarm's global best</td>
+</tr>
+<tr>
+  <td><strong>Firefly Algorithm</strong></td>
+  <td>Firefly bioluminescence</td>
+  <td>Brighter fireflies (better solutions) attract dimmer ones; population converges toward high-fitness regions</td>
+</tr>
+<tr>
+  <td><strong>Genetic Algorithm (GA)</strong></td>
+  <td>Biological evolution</td>
+  <td>Solutions are "chromosomes"; selection, crossover, and mutation evolve a population toward better fitness over generations</td>
+</tr>
+<tr>
+  <td><strong>Simulated Annealing (SA)</strong></td>
+  <td>Metal cooling</td>
+  <td>Accepts worse solutions with decreasing probability over time; escapes local minima early, exploits later</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<h3 id="why-not-for-path-planning-vs-d-lite">Why NOT for Path Planning (vs D* Lite)?</h3>
+
+<table>
+<thead>
+<tr>
+  <th>Algorithm</th>
+  <th>Why NOT suitable for our path planning problem</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>ACO</strong></td>
+  <td>Needs many iterations of ant colony simulation to converge — not real-time; when a new obstacle appears, pheromone trails must be rebuilt from scratch; no incremental update</td>
+</tr>
+<tr>
+  <td><strong>PSO</strong></td>
+  <td>Designed for <strong>continuous</strong> search spaces; our restaurant map is a <strong>discrete</strong> occupancy grid — PSO particles don't naturally snap to valid grid cells; hard to enforce collision-free constraints</td>
+</tr>
+<tr>
+  <td><strong>Firefly</strong></td>
+  <td>Population-based global search — requires many function evaluations per iteration; adding one obstacle forces a full re-run; no incremental replanning</td>
+</tr>
+<tr>
+  <td><strong>GA</strong></td>
+  <td>Path encoded as chromosome; crossover and mutation often produce invalid (collision) paths requiring repair; slow convergence; must restart from scratch after every map change</td>
+</tr>
+<tr>
+  <td><strong>SA</strong></td>
+  <td>Single-solution search; good for offline route optimization (e.g., TSP) but no dynamic replanning; slow to re-converge after obstacle insertion</td>
+</tr>
+<tr>
+  <td><strong>D* Lite (chosen)</strong></td>
+  <td>Designed specifically for dynamic grid environments; updates only nodes affected by the obstacle change; provably optimal; real-time replanning in O(k log k)</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+  <p><strong>Key point:</strong> When a waiter steps into the corridor mid-delivery, D* Lite replans in milliseconds by updating only the blocked cells. ACO would need to re-run its entire ant colony simulation — unacceptable for a real-time delivery robot.</p>
+</blockquote>
+
+<hr />
+
+<h3 id="why-not-for-frontier-exploration-vs-rl-q-learning">Why NOT for Frontier Exploration (vs RL Q-learning)?</h3>
+
+<table>
+<thead>
+<tr>
+  <th>Algorithm</th>
+  <th>Why NOT suitable for frontier selection</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>ACO</strong></td>
+  <td>Pheromone trails work for repeated routing, but frontier cells change every timestep as the map grows — pheromone trails become stale immediately</td>
+</tr>
+<tr>
+  <td><strong>PSO</strong></td>
+  <td>Continuous-space optimizer; frontier selection is a <strong>discrete choice</strong> from a small set of candidate cells — PSO's velocity-position update doesn't translate to "pick frontier A or B"</td>
+</tr>
+<tr>
+  <td><strong>Firefly</strong></td>
+  <td>Overkill for a small discrete action space; overhead of maintaining a firefly population far exceeds the complexity of the decision being made</td>
+</tr>
+<tr>
+  <td><strong>GA</strong></td>
+  <td>Evolving a frontier selection policy requires many generations; Q-learning achieves the same adaptive behavior with a single lightweight table update per step</td>
+</tr>
+<tr>
+  <td><strong>RL Q-learning (chosen)</strong></td>
+  <td>Single Q-table update per step; no population to maintain; improves over episodes; perfectly matched to a small discrete action space</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+  <p><strong>Key point:</strong> Bio-inspired algorithms shine when the solution space is large, continuous, and the problem is static. Frontier selection is a tiny discrete problem that changes every timestep — Q-learning's one-line update is perfectly sized for it.</p>
+</blockquote>
+
+<hr />
+
+<h3 id="why-not-for-cnn-training-vs-imitation-learning">Why NOT for CNN Training (vs Imitation Learning)?</h3>
+
+<table>
+<thead>
+<tr>
+  <th>Algorithm</th>
+  <th>Why NOT suitable for training the path planner</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>GA / Evolutionary strategies</strong></td>
+  <td>Can evolve neural network weights (neuroevolution) but require evaluating thousands of candidate networks — orders of magnitude slower than gradient-based backpropagation</td>
+</tr>
+<tr>
+  <td><strong>PSO for NN weights</strong></td>
+  <td>Used in research for tiny networks; does not scale to modern CNNs; loses to Adam/SGD in speed and final accuracy on large datasets</td>
+</tr>
+<tr>
+  <td><strong>ACO for action selection</strong></td>
+  <td>Selects actions based on pheromone trails; no generalization to unseen maps; the CNN generalizes from learned visual features</td>
+</tr>
+<tr>
+  <td><strong>CNN + imitation learning (chosen)</strong></td>
+  <td>Supervised learning with cross-entropy + backpropagation is the most data-efficient way to train a neural network; directly inherits D*'s optimality</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<h3 id="when-would-bio-inspired-algorithms-be-appropriate">When WOULD Bio-Inspired Algorithms Be Appropriate?</h3>
+
+<table>
+<thead>
+<tr>
+  <th>Scenario</th>
+  <th>Best Algorithm</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Offline route optimization for fixed restaurant layout (visit all tables once — TSP-style)</td>
+  <td>ACO or GA</td>
+</tr>
+<tr>
+  <td>Tuning the 6 α noise parameters of the motion model</td>
+  <td>PSO or SA (continuous parameter search)</td>
+</tr>
+<tr>
+  <td>Optimizing table placement / layout of a new restaurant for minimum robot travel</td>
+  <td>GA</td>
+</tr>
+<tr>
+  <td>Multi-robot coordination (several delivery robots, no conflicts)</td>
+  <td>ACO (pheromones model interference naturally)</td>
+</tr>
+<tr>
+  <td>Hyperparameter tuning for CNN or PPO</td>
+  <td>PSO, GA, or Bayesian Optimization</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<h3 id="full-comparison-bio-inspired-vs-chosen-approaches">Full Comparison: Bio-Inspired vs Chosen Approaches</h3>
+
+<table>
+<thead>
+<tr>
+  <th>Problem</th>
+  <th>Bio-inspired option</th>
+  <th>Chosen approach</th>
+  <th>Winner for our use case</th>
+  <th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Real-time path planning on dynamic grid</td>
+  <td>ACO, PSO, Firefly, GA</td>
+  <td>D* Lite</td>
+  <td><strong>D* Lite</strong></td>
+  <td>Incremental, optimal, real-time; bio-inspired need full re-run on change</td>
+</tr>
+<tr>
+  <td>Adaptive frontier selection</td>
+  <td>ACO pheromones, PSO</td>
+  <td>RL Q-learning</td>
+  <td><strong>RL</strong></td>
+  <td>Lightweight per-step update; matches discrete small-action-space problem</td>
+</tr>
+<tr>
+  <td>Learning a planner from examples</td>
+  <td>Neuroevolution (GA/ES)</td>
+  <td>CNN imitation</td>
+  <td><strong>CNN</strong></td>
+  <td>Backprop is faster and far more scalable than evolving network weights</td>
+</tr>
+<tr>
+  <td>Noise parameter calibration (α₁–α₆)</td>
+  <td>PSO / SA</td>
+  <td>Manual calibration</td>
+  <td><strong>PSO/SA would help</strong></td>
+  <td>Valid future improvement — continuous parameter space suits PSO/SA perfectly</td>
+</tr>
+<tr>
+  <td>End-to-end navigation policy</td>
+  <td>Evolutionary RL (ES)</td>
+  <td>PPO</td>
+  <td><strong>PPO</strong></td>
+  <td>Better sample efficiency; stable clipped updates; ES needs many more rollouts</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<blockquote>
+  <p><strong>Viva closing sentence:</strong>
+  <em>"Bio-inspired algorithms are powerful for offline global optimization, but our pipeline requires real-time incremental decisions in a dynamic environment. D</em> Lite, Q-learning, and CNN imitation each outperform their bio-inspired counterparts specifically because they are designed for fast, online, adaptive operation — not batch population search."*</p>
+</blockquote>
+
+<hr />
+
+<p><em>Prepared from Group2 Assignment 1 &amp; Assignment 2 — AIML ZG528 Robotics, 2026</em></p>
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: 'default',
+    themeVariables: { fontSize: '11px' } });
+</script>
+
+</body>
+</html>
